@@ -70,16 +70,16 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
       id: Date.now().toString(),
       completed: false,
     }
-    setTasks([newTask, ...tasks])
+    setTasks((prev) => [newTask, ...prev])
   }
 
   const toggleTask = (id: string) => {
-    setTasks(tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)))
+    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)))
   }
 
   const addSubtask = (taskId: string, title: string) => {
-    setTasks(
-      tasks.map((t) => {
+    setTasks((prev) =>
+      prev.map((t) => {
         if (t.id === taskId) {
           const newSubtask: SubTask = {
             id: Date.now().toString(),
@@ -94,8 +94,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const toggleSubtask = (taskId: string, subtaskId: string) => {
-    setTasks(
-      tasks.map((t) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((t) => {
         if (t.id === taskId) {
           return {
             ...t,

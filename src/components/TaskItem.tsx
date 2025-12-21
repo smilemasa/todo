@@ -12,6 +12,7 @@ import {
   ListItemText,
   Button,
   Collapse,
+  TextField,
 } from "@mui/material"
 import {
   Check,
@@ -31,12 +32,15 @@ import { useTaskContext } from "../context/TaskContext"
 type TaskItemProps = {
   task: TaskType
   onToggle: (id: string) => void
+  hideAddSubtask?: boolean
 }
 
-export const TaskItem = ({ task, onToggle }: TaskItemProps) => {
+export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
   const { addSubtask, toggleSubtask } = useTaskContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [expanded, setExpanded] = useState(false)
+  const [isAddingSubtask, setIsAddingSubtask] = useState(false)
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
   const open = Boolean(anchorEl)
 
   const subtasks = task.subtasks || []
@@ -329,6 +333,7 @@ export const TaskItem = ({ task, onToggle }: TaskItemProps) => {
             {subtasks.map((subtask) => (
               <Box
                 key={subtask.id}
+                onClick={() => toggleSubtask(task.id, subtask.id)}
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -336,10 +341,16 @@ export const TaskItem = ({ task, onToggle }: TaskItemProps) => {
                   bgcolor: "grey.50",
                   borderRadius: 2,
                   gap: 1.5,
+                  cursor: "pointer",
+                  transition: "background-color 0.2s",
+                  "&:hover": {
+                    bgcolor: "grey.100",
+                  },
                 }}
               >
                 <Checkbox
                   checked={subtask.completed}
+                  onClick={(e) => e.stopPropagation()}
                   onChange={() => toggleSubtask(task.id, subtask.id)}
                   sx={{
                     p: 0,
@@ -394,30 +405,64 @@ export const TaskItem = ({ task, onToggle }: TaskItemProps) => {
             ))}
           </Stack>
 
-          <Button
-            startIcon={<Add />}
-            onClick={() => {
-              const title = prompt("新しいサブタスクを入力してください")
-              if (title) {
-                addSubtask(task.id, title)
-              }
-            }}
-            sx={{
-              mt: 2,
-              textTransform: "none",
-              fontWeight: 500,
-              fontSize: "0.9375rem",
-              color: "#3b82f6",
-              p: 0,
-              "&:hover": {
-                bgcolor: "transparent",
-                textDecoration: "underline",
-              },
-            }}
-            disableRipple
-          >
-            サブタスクを追加
-          </Button>
+          {!hideAddSubtask &&
+            (isAddingSubtask ? (
+              <TextField
+                fullWidth
+                variant="outlined"
+                size="small"
+                placeholder="新しいサブタスクを入力"
+                value={newSubtaskTitle}
+                onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault()
+                    if (newSubtaskTitle.trim()) {
+                      addSubtask(task.id, newSubtaskTitle)
+                      setNewSubtaskTitle("")
+                      // Optional: keep focus to add more? User requested 'transform to text box', usually implies one-off or continuous.
+                      // Let's keep it simple: close after add.
+                      setIsAddingSubtask(false)
+                    }
+                  } else if (e.key === "Escape") {
+                    setIsAddingSubtask(false)
+                    setNewSubtaskTitle("")
+                  }
+                }}
+                onBlur={() => {
+                  if (!newSubtaskTitle.trim()) {
+                    setIsAddingSubtask(false)
+                  }
+                }}
+                autoFocus
+                sx={{
+                  mt: 2,
+                  "& .MuiOutlinedInput-root": {
+                    bgcolor: "white",
+                  },
+                }}
+              />
+            ) : (
+              <Button
+                startIcon={<Add />}
+                onClick={() => setIsAddingSubtask(true)}
+                sx={{
+                  mt: 2,
+                  textTransform: "none",
+                  fontWeight: 500,
+                  fontSize: "0.9375rem",
+                  color: "#3b82f6",
+                  p: 0,
+                  "&:hover": {
+                    bgcolor: "transparent",
+                    textDecoration: "underline",
+                  },
+                }}
+                disableRipple
+              >
+                サブタスクを追加
+              </Button>
+            ))}
         </Box>
       </Collapse>
     </Card>

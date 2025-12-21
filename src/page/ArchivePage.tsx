@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Box, Typography, InputBase, IconButton, Paper, Stack } from "@mui/material"
+import { Box, InputBase, IconButton, Paper, Stack } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
 import { useTaskContext } from "../context/TaskContext"
+import { TaskItem } from "../components/TaskItem"
 
 export const ArchivePage = () => {
-  const { tasks } = useTaskContext()
+  const { tasks, toggleTask } = useTaskContext()
   const [searchQuery, setSearchQuery] = useState("")
 
   const completedTasks = tasks.filter((task) => {
@@ -59,47 +59,7 @@ export const ArchivePage = () => {
       {/* List */}
       <Stack spacing={2}>
         {completedTasks.map((task) => (
-          <Paper
-            key={task.id}
-            elevation={0}
-            sx={{
-              p: "16px",
-              borderRadius: "16px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 1,
-            }}
-          >
-            {/* Header of card: Icon + Status + Date */}
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <CheckCircleOutlineIcon sx={{ color: "#10b981", fontSize: "1.25rem" }} />
-                <Typography sx={{ color: "#10b981", fontWeight: 600, fontSize: "0.875rem" }}>
-                  完了
-                </Typography>
-              </Box>
-              <Typography variant="body2" sx={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-                {task.date || "2024/01/15"}
-              </Typography>
-            </Box>
-
-            {/* Title */}
-            <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1rem", lineHeight: 1.4 }}>
-              {task.title}
-            </Typography>
-
-            {/* Description */}
-            {task.description && (
-              <Typography
-                variant="body2"
-                sx={{ color: "#6b7280", fontSize: "0.875rem", lineHeight: 1.5 }}
-              >
-                {task.description}
-              </Typography>
-            )}
-          </Paper>
+          <TaskItem key={task.id} task={task} onToggle={toggleTask} hideAddSubtask={true} />
         ))}
       </Stack>
     </Box>
