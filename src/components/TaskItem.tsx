@@ -12,7 +12,6 @@ import {
   ListItemText,
   Button,
   Collapse,
-  CardActionArea,
 } from "@mui/material"
 import {
   Check,
@@ -67,11 +66,13 @@ export const TaskItem = ({ task, onToggle }: TaskItemProps) => {
         width: "100%",
       }}
     >
-      <CardActionArea
+      <Box
         onClick={() => setExpanded(!expanded)}
         sx={{
-          "& .MuiCardActionArea-focusHighlight": {
-            bgcolor: "transparent",
+          cursor: "pointer",
+          transition: "background-color 0.2s",
+          "&:hover": {
+            bgcolor: "action.hover",
           },
         }}
       >
@@ -320,7 +321,7 @@ export const TaskItem = ({ task, onToggle }: TaskItemProps) => {
             </MenuItem>
           </Menu>
         </Box>
-      </CardActionArea>
+      </Box>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <Box sx={{ px: 2, pb: 2 }}>
