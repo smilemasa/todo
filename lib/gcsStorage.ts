@@ -7,13 +7,19 @@ const storage = new Storage({
   credentials: JSON.parse(process.env.GCS_SERVICE_ACCOUNT_KEY || "{}"),
 })
 
-const bucketName = process.env.GCS_BUCKET_NAME || ""
-const bucket = storage.bucket(bucketName)
+const bucketName = process.env.GCS_BUCKET_NAME
+if (!bucketName) {
+  console.warn("GCS_BUCKET_NAME is not set. Cloud Storage functionality will not be available.")
+}
+const bucket = bucketName ? storage.bucket(bucketName) : null
 
 /**
  * ユーザーのタスクをGCSに保存
  */
 export async function saveUserTasks(userId: string, tasks: TaskType[]): Promise<void> {
+  if (!bucket) {
+    throw new Error("Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable.")
+  }
   const fileName = `tasks/${userId}.json`
   const file = bucket.file(fileName)
 
@@ -31,6 +37,10 @@ export async function saveUserTasks(userId: string, tasks: TaskType[]): Promise<
  * ユーザーのタスクをGCSから取得
  */
 export async function getUserTasks(userId: string): Promise<TaskType[]> {
+  if (!bucket) {
+    console.warn("Cloud Storage is not configured. Returning empty task list.")
+    return []
+  }
   const fileName = `tasks/${userId}.json`
   const file = bucket.file(fileName)
 
@@ -53,6 +63,9 @@ export async function getUserTasks(userId: string): Promise<TaskType[]> {
  * ユーザーのタスクファイルを削除
  */
 export async function deleteUserTasks(userId: string): Promise<void> {
+  if (!bucket) {
+    throw new Error("Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable.")
+  }
   const fileName = `tasks/${userId}.json`
   const file = bucket.file(fileName)
 
