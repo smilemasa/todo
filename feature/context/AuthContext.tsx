@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect } from "react"
+import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 
 type User = {
@@ -21,23 +22,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const STORAGE_KEY = "todo_auth_user"
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    // Check for persisted user
-    const storedUser = localStorage.getItem(STORAGE_KEY)
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser))
-      } catch (e) {
-        console.error("Failed to parse user from storage", e)
-        localStorage.removeItem(STORAGE_KEY)
+    const initAuth = () => {
+      // Check for persisted user
+      const storedUser = localStorage.getItem(STORAGE_KEY)
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser))
+        } catch (e) {
+          console.error("Failed to parse user from storage", e)
+          localStorage.removeItem(STORAGE_KEY)
+        }
       }
+      setIsLoading(false)
     }
-    setIsLoading(false)
+
+    const timer = setTimeout(initAuth, 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const loginGoogle = async () => {

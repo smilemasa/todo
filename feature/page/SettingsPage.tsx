@@ -14,8 +14,11 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import LogoutIcon from "@mui/icons-material/Logout"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import { useAuth } from "../context/AuthContext"
 
 export const SettingsPage = () => {
+  const { logout } = useAuth()
+
   const menuItems = [
     {
       text: "ヘルプ",
@@ -31,7 +34,8 @@ export const SettingsPage = () => {
       text: "ログアウト",
       icon: <LogoutIcon sx={{ color: "#ef4444" }} />, // red-500
       color: "#ef4444",
-      divider: true, // Special flag for separator if needed, but MUI Paper usually handles grouping
+      divider: true,
+      onClick: logout,
     },
   ]
 
@@ -62,7 +66,7 @@ export const SettingsPage = () => {
         <List disablePadding>
           {menuItems.map((item, index) => (
             <ListItem key={item.text} disablePadding divider={index !== menuItems.length - 1}>
-              <ListItemButton sx={{ py: 2 }}>
+              <ListItemButton sx={{ py: 2 }} onClick={item.onClick}>
                 <ListItemIcon sx={{ minWidth: 40, color: "text.primary" }}>
                   {item.icon}
                 </ListItemIcon>

@@ -25,7 +25,7 @@ const INITIAL_TASKS: TaskType[] = [
   {
     id: "2",
     title: "週報を提出",
-    deadline: "金曜日17:00まで",
+    deadline: "",
     completed: false,
     subtasks: [
       { id: "s1", title: "資料のデータを収集", completed: true },
