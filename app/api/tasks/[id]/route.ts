@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { updateUserTask, deleteUserTask } from "@/lib/gcsStorage"
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 // タスクの更新
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
