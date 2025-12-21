@@ -7,6 +7,9 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Todo App",
   description: "A simple todo app",
+  appleWebApp: {
+    capable: true,
+  },
 }
 
 export default function RootLayout({
