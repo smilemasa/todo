@@ -1,4 +1,4 @@
-import { ArchivePage } from "@/page/ArchivePage"
+import { ArchivePage } from "../../feature/page/ArchivePage"
 
 export default function Page() {
   return <ArchivePage />

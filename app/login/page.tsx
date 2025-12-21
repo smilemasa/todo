@@ -1,4 +1,4 @@
-import { LoginPage } from "@/page/LoginPage"
+import { LoginPage } from "../../feature/page/LoginPage"
 
 export default function Page() {
   return <LoginPage />
