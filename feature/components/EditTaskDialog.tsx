@@ -65,6 +65,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
   const [subtasks, setSubtasks] = useState<SubTask[]>(task.subtasks || [])
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
   const [showSubtaskInput, setShowSubtaskInput] = useState(false)
+  const [titleError, setTitleError] = useState(false)
 
   // Reset form when task changes
   useEffect(() => {
@@ -75,6 +76,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
     setMemo(task.memo || "")
     setSubtasks(task.subtasks || [])
     setNewSubtaskTitle("")
+    setTitleError(false)
   }, [task])
 
   const handleToggleSubtask = (subtaskId: string) => {
@@ -111,6 +113,13 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
   }
 
   const handleSave = () => {
+    // Validation
+    if (!title.trim()) {
+      setTitleError(true)
+      return
+    }
+    setTitleError(false)
+
     const updatedTask: TaskType = {
       ...task,
       title,
@@ -189,8 +198,14 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
             fullWidth
             variant="standard"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="タスク名"
+            onChange={(e) => {
+              setTitle(e.target.value)
+              if (titleError && e.target.value.trim()) {
+                setTitleError(false)
+              }
+            }}
+            placeholder="タスク名 *"
+            error={titleError}
             InputProps={{
               disableUnderline: true,
               sx: {
@@ -199,7 +214,12 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
               },
             }}
           />
-          {deadline && (
+          {titleError && (
+            <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
+              タスク名は必須です
+            </Typography>
+          )}
+          {deadline && !titleError && (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
               {deadline}
             </Typography>
@@ -230,7 +250,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
             )}
           </Box>
 
-          <Stack spacing={1.5}>
+          <Stack spacing={0}>
             <SubTaskList
               subtasks={subtasks}
               onToggle={handleToggleSubtask}

@@ -36,9 +36,9 @@ export const SubTaskList = ({
             display: "flex",
             alignItems: "center",
             gap: 1.5,
-            bgcolor: showDeleteButton ? "#fafafa" : "transparent",
+            bgcolor: "transparent",
             borderRadius: 2,
-            p: showDeleteButton ? 1.5 : 1,
+            p: 1,
           }}
         >
           <Checkbox

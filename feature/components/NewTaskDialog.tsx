@@ -27,10 +27,15 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
   const [description, setDescription] = useState("")
   const [priority, setPriority] = useState("中") // Default to Medium
   const [date, setDate] = useState("")
+  const [titleError, setTitleError] = useState(false)
 
   const handleCreate = () => {
-    // Basic validation
-    if (!title.trim()) return
+    // Validation
+    if (!title.trim()) {
+      setTitleError(true)
+      return
+    }
+    setTitleError(false)
 
     const newTask: Omit<TaskType, "id" | "completed"> = {
       title,
@@ -59,6 +64,7 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
     setDescription("")
     setPriority("中")
     setDate("")
+    setTitleError(false)
   }
 
   return (
@@ -81,14 +87,21 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
       <DialogContent>
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-            タスク名
+            タスク名 <Box component="span" sx={{ color: "error.main" }}>*</Box>
           </Typography>
           <TextField
             fullWidth
             placeholder="タスク名を入力"
             variant="outlined"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value)
+              if (titleError && e.target.value.trim()) {
+                setTitleError(false)
+              }
+            }}
+            error={titleError}
+            helperText={titleError ? "タスク名は必須です" : ""}
             InputProps={{
               sx: { borderRadius: 2, bgcolor: "#fff" },
             }}
