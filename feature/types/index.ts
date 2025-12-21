@@ -4,6 +4,8 @@ export type SubTask = {
   completed: boolean
 }
 
+export type Priority = "low" | "medium" | "high"
+
 export type TaskType = {
   id: string
   title: string
@@ -19,4 +21,6 @@ export type TaskType = {
   }>
   completed: boolean
   subtasks?: SubTask[]
+  priority?: Priority
+  memo?: string
 }

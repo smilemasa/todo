@@ -38,3 +38,6 @@ tsconfig.tsbuildinfo
 *.sln
 *.sw?
 *.local
+
+# Playwright MCP
+/.playwright-mcp/

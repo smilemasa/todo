@@ -65,12 +65,14 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        sx: {
-          borderRadius: 4,
-          p: 1,
-          width: "100%",
-          maxWidth: 480,
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 4,
+            p: 1,
+            width: "100%",
+            maxWidth: 480,
+          },
         },
       }}
     >

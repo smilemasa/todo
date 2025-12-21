@@ -5,7 +5,7 @@ import { BottomNav } from "./BottomNav"
 import { Header } from "./Header"
 import { usePathname, useRouter } from "next/navigation"
 import { useAuth } from "../context/AuthContext"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 type LayoutProps = {
   children: React.ReactNode
@@ -15,7 +15,12 @@ export const Layout = ({ children }: LayoutProps) => {
   const pathname = usePathname()
   const router = useRouter()
   const { user, isLoading } = useAuth()
+  const [mounted, setMounted] = useState(false)
   const isLoginPage = pathname === "/login"
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!isLoading && !user && !isLoginPage) {
@@ -23,7 +28,8 @@ export const Layout = ({ children }: LayoutProps) => {
     }
   }, [user, isLoading, isLoginPage, router])
 
-  if (isLoading) {
+  // Prevent hydration mismatch by showing loading state until mounted
+  if (!mounted || isLoading) {
     return (
       <Box
         sx={{

@@ -28,6 +28,46 @@ import {
 import { useState } from "react"
 import type { TaskType } from "../types"
 import { useTaskContext } from "../context/TaskContext"
+import { EditTaskDialog } from "./EditTaskDialog"
+import { SubTaskList } from "./SubTaskList"
+
+// デザインシステムの定数
+const CARD_SPACING = {
+  marginBottom: 2,
+  borderRadius: 4,
+  padding: 2,
+} as const
+
+const CHECKBOX_SIZE = {
+  width: 24,
+  height: 24,
+} as const
+
+const ICON_SIZE = {
+  small: 14,
+  medium: 18,
+  large: 22,
+} as const
+
+const TAG_COLORS = {
+  warning: {
+    background: "#ffedd5", // orange-100
+    text: "#ea580c", // orange-600
+  },
+  default: {
+    background: "#f3f4f6", // gray-100
+    text: "#4b5563", // gray-600
+  },
+  date: {
+    background: "#eff6ff", // blue-50
+    text: "#2563eb", // blue-600
+  },
+  progress: {
+    background: "#ede9fe", // purple-100
+    text: "#7c3aed", // purple-600
+  },
+  subtaskBg: "#6366f1", // indigo-500
+} as const
 
 type TaskItemProps = {
   task: TaskType
@@ -36,11 +76,12 @@ type TaskItemProps = {
 }
 
 export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
-  const { addSubtask, toggleSubtask } = useTaskContext()
+  const { addSubtask, toggleSubtask, deleteTask, duplicateTask, updateTask } = useTaskContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [expanded, setExpanded] = useState(false)
   const [isAddingSubtask, setIsAddingSubtask] = useState(false)
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const open = Boolean(anchorEl)
 
   const subtasks = task.subtasks || []
@@ -53,36 +94,46 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleMenuClose = (event?: React.MouseEvent<HTMLElement>) => {
-    if (event) event.stopPropagation()
+  const handleMenuClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation()
+    onToggle(task.id)
+  }
+
+  const handleCheckboxClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+  }
+
+  const handleExpandToggle = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setExpanded(!expanded)
   }
 
   return (
     <Card
       elevation={0}
       sx={{
-        mb: 2,
-        borderRadius: 4,
+        mb: CARD_SPACING.marginBottom,
+        borderRadius: CARD_SPACING.borderRadius,
         border: "1px solid",
         borderColor: task.completed ? "transparent" : "divider",
         bgcolor: "background.paper",
         width: "100%",
       }}
+      role="listitem"
     >
       <Box
         onClick={() => setExpanded(!expanded)}
         sx={{
           cursor: "pointer",
-          transition: "background-color 0.2s",
-          "&:hover": {
-            bgcolor: "action.hover",
-          },
         }}
       >
         <Box
           sx={{
-            p: 2,
+            p: CARD_SPACING.padding,
             display: "flex",
             alignItems: "flex-start",
             gap: 2,
@@ -90,14 +141,16 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
         >
           <Checkbox
             checked={task.completed}
-            onChange={() => onToggle(task.id)}
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
+            onChange={handleToggle}
+            onClick={handleCheckboxClick}
+            inputProps={{
+              "aria-label": `タスク「${task.title}」を${task.completed ? "未完了" : "完了"}にする`,
+            }}
             icon={
               <Box
                 sx={{
-                  width: 24,
-                  height: 24,
+                  width: CHECKBOX_SIZE.width,
+                  height: CHECKBOX_SIZE.height,
                   borderRadius: 2,
                   border: "2px solid",
                   borderColor: "grey.300",
@@ -108,8 +161,8 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             checkedIcon={
               <Box
                 sx={{
-                  width: 24,
-                  height: 24,
+                  width: CHECKBOX_SIZE.width,
+                  height: CHECKBOX_SIZE.height,
                   borderRadius: 2,
                   bgcolor: "primary.main",
                   display: "flex",
@@ -117,7 +170,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                   justifyContent: "center",
                 }}
               >
-                <Check sx={{ fontSize: 18, color: "white" }} />
+                <Check sx={{ fontSize: ICON_SIZE.medium, color: "white" }} />
               </Box>
             }
             sx={{ p: 0.5, mt: 0 }}
@@ -160,8 +213,8 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                     <Box
                       component="span"
                       sx={{
-                        bgcolor: "#eff6ff",
-                        color: "#2563eb",
+                        bgcolor: TAG_COLORS.date.background,
+                        color: TAG_COLORS.date.text,
                         px: 1,
                         borderRadius: 99,
                         fontSize: "0.75rem",
@@ -189,8 +242,8 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                     <Box
                       component="span"
                       sx={{
-                        bgcolor: "#eff6ff",
-                        color: "#2563eb",
+                        bgcolor: TAG_COLORS.date.background,
+                        color: TAG_COLORS.date.text,
                         px: 1,
                         borderRadius: 99,
                         fontSize: "0.75rem",
@@ -207,8 +260,8 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                 <Box
                   component="span"
                   sx={{
-                    bgcolor: "#ede9fe",
-                    color: "#7c3aed",
+                    bgcolor: TAG_COLORS.progress.background,
+                    color: TAG_COLORS.progress.text,
                     px: 1.5,
                     py: 0.25,
                     borderRadius: 99,
@@ -226,7 +279,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                     key={i}
                     icon={
                       tag.icon === "clock" ? (
-                        <AccessTime sx={{ fontSize: "14px !important" }} />
+                        <AccessTime sx={{ fontSize: `${ICON_SIZE.small}px !important` }} />
                       ) : undefined
                     }
                     label={tag.text}
@@ -235,8 +288,8 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                       height: 24,
                       fontWeight: 700,
                       fontSize: "0.75rem",
-                      bgcolor: tag.variant === "warning" ? "#ffedd5" : "#f3f4f6", // orange-100 or gray-100
-                      color: tag.variant === "warning" ? "#ea580c" : "#4b5563", // orange-600 or gray-600
+                      bgcolor: tag.variant === "warning" ? TAG_COLORS.warning.background : TAG_COLORS.default.background,
+                      color: tag.variant === "warning" ? TAG_COLORS.warning.text : TAG_COLORS.default.text,
                       "& .MuiChip-icon": {
                         color: "inherit",
                         ml: 0.5,
@@ -252,11 +305,9 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             <IconButton
               size="small"
               sx={{ color: "text.secondary" }}
-              onClick={(e) => {
-                e.stopPropagation()
-                setExpanded(!expanded)
-              }}
-              onMouseDown={(e) => e.stopPropagation()}
+              onClick={handleExpandToggle}
+              aria-label={expanded ? "詳細を閉じる" : "詳細を開く"}
+              aria-expanded={expanded}
             >
               {expanded ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
@@ -264,16 +315,19 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
               size="small"
               sx={{ color: "text.secondary" }}
               onClick={handleMenuOpen}
-              onMouseDown={(e) => e.stopPropagation()}
+              aria-label="メニューを開く"
+              aria-controls={open ? "task-menu" : undefined}
+              aria-haspopup="true"
             >
               <MoreVert />
             </IconButton>
           </Box>
 
           <Menu
+            id="task-menu"
             anchorEl={anchorEl}
             open={open}
-            onClose={() => handleMenuClose()}
+            onClose={handleMenuClose}
             onClick={(e) => e.stopPropagation()}
             anchorOrigin={{
               vertical: "bottom",
@@ -283,20 +337,28 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
               vertical: "top",
               horizontal: "right",
             }}
-            PaperProps={{
-              elevation: 3,
-              sx: {
-                borderRadius: 3,
-                minWidth: 180,
-                minHeight: 180,
-                mt: 1,
-                "& .MuiList-root": {
-                  // padding: 0,
+            slotProps={{
+              paper: {
+                elevation: 3,
+                sx: {
+                  borderRadius: 3,
+                  minWidth: 180,
+                  mt: 1,
+                  padding: 0,
+                  "& .MuiList-root": {
+                    padding: 0,
+                  },
                 },
               },
             }}
           >
-            <MenuItem onClick={() => handleMenuClose()} sx={{ py: 1.5 }}>
+            <MenuItem
+              onClick={() => {
+                handleMenuClose()
+                setIsEditDialogOpen(true)
+              }}
+              sx={{ py: 1.5 }}
+            >
               <ListItemIcon sx={{ minWidth: 24, mr: 1.5 }}>
                 <EditOutlined fontSize="small" sx={{ color: "text.secondary" }} />
               </ListItemIcon>
@@ -305,7 +367,13 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                 slotProps={{ primary: { variant: "body2", fontWeight: 500 } }}
               />
             </MenuItem>
-            <MenuItem onClick={() => handleMenuClose()} sx={{ py: 1.5 }}>
+            <MenuItem
+              onClick={() => {
+                handleMenuClose()
+                duplicateTask(task.id)
+              }}
+              sx={{ py: 1.5 }}
+            >
               <ListItemIcon sx={{ minWidth: 24, mr: 1.5 }}>
                 <ContentCopy fontSize="small" sx={{ color: "text.secondary" }} />
               </ListItemIcon>
@@ -314,7 +382,13 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                 slotProps={{ primary: { variant: "body2", fontWeight: 500 } }}
               />
             </MenuItem>
-            <MenuItem onClick={() => handleMenuClose()} sx={{ py: 1.5 }}>
+            <MenuItem
+              onClick={() => {
+                handleMenuClose()
+                deleteTask(task.id)
+              }}
+              sx={{ py: 1.5 }}
+            >
               <ListItemIcon sx={{ minWidth: 24, mr: 1.5 }}>
                 <DeleteOutline fontSize="small" color="error" />
               </ListItemIcon>
@@ -330,67 +404,11 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
       </Box>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Box sx={{ px: 2, pb: 2 }}>
-          <Stack spacing={1}>
-            {subtasks.map((subtask) => (
-              <Box
-                key={subtask.id}
-                onClick={() => toggleSubtask(task.id, subtask.id)}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  p: 1,
-                  bgcolor: "grey.50",
-                  borderRadius: 2,
-                  gap: 1.5,
-                  cursor: "pointer",
-                  transition: "background-color 0.2s",
-                  "&:hover": {
-                    bgcolor: "grey.100",
-                  },
-                }}
-              >
-                <Checkbox
-                  checked={subtask.completed}
-                  onClick={(e) => e.stopPropagation()}
-                  onChange={() => toggleSubtask(task.id, subtask.id)}
-                  sx={{
-                    p: 0,
-                    color: "#6366f1",
-                    "&.Mui-checked": {
-                      color: "#6366f1",
-                    },
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 22,
-                      bgcolor: "white",
-                      borderRadius: 1,
-                    },
-                  }}
-                  icon={
-                    <Box
-                      sx={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: 1,
-                        border: "2px solid",
-                        borderColor: "grey.300",
-                        bgcolor: "white",
-                      }}
-                    />
-                  }
-                />
-                <Typography
-                  sx={{
-                    fontSize: "0.9375rem",
-                    color: subtask.completed ? "text.secondary" : "text.primary",
-                    textDecoration: subtask.completed ? "line-through" : "none",
-                  }}
-                >
-                  {subtask.title}
-                </Typography>
-              </Box>
-            ))}
-          </Stack>
+        <Box sx={{ px: 2, pb: 2, pt: 2, borderTop: "1px solid", borderColor: "divider" }}>
+          <SubTaskList
+            subtasks={subtasks}
+            onToggle={(subtaskId) => toggleSubtask(task.id, subtaskId)}
+          />
 
           {!hideAddSubtask &&
             (isAddingSubtask ? (
@@ -440,10 +458,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                   fontSize: "0.9375rem",
                   color: "#3b82f6",
                   p: 0,
-                  "&:hover": {
-                    bgcolor: "transparent",
-                    textDecoration: "underline",
-                  },
                 }}
                 disableRipple
               >
@@ -452,6 +466,14 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             ))}
         </Box>
       </Collapse>
+
+      {/* 編集ダイアログ */}
+      <EditTaskDialog
+        open={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        task={task}
+        onSave={(updatedTask) => updateTask(task.id, updatedTask)}
+      />
     </Card>
   )
 }
