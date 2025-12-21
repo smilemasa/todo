@@ -1,5 +1,5 @@
-import { SettingsPage } from "@/page/SettingsPage";
+import { SettingsPage } from "@/page/SettingsPage"
 
 export default function Page() {
-    return <SettingsPage />;
+  return <SettingsPage />
 }
