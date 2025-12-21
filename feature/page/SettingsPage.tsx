@@ -72,10 +72,12 @@ export const SettingsPage = () => {
                 </ListItemIcon>
                 <ListItemText
                   primary={item.text}
-                  primaryTypographyProps={{
-                    sx: {
-                      fontWeight: 500,
-                      color: item.color === "inherit" ? "text.primary" : item.color,
+                  slotProps={{
+                    primary: {
+                      sx: {
+                        fontWeight: 500,
+                        color: item.color === "inherit" ? "text.primary" : item.color,
+                      },
                     },
                   }}
                 />

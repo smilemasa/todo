@@ -302,7 +302,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
               </ListItemIcon>
               <ListItemText
                 primary="編集"
-                primaryTypographyProps={{ variant: "body2", fontWeight: 500 }}
+                slotProps={{ primary: { variant: "body2", fontWeight: 500 } }}
               />
             </MenuItem>
             <MenuItem onClick={() => handleMenuClose()} sx={{ py: 1.5 }}>
@@ -311,7 +311,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
               </ListItemIcon>
               <ListItemText
                 primary="複製"
-                primaryTypographyProps={{ variant: "body2", fontWeight: 500 }}
+                slotProps={{ primary: { variant: "body2", fontWeight: 500 } }}
               />
             </MenuItem>
             <MenuItem onClick={() => handleMenuClose()} sx={{ py: 1.5 }}>
@@ -320,7 +320,9 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
               </ListItemIcon>
               <ListItemText
                 primary="削除"
-                primaryTypographyProps={{ variant: "body2", fontWeight: 500, color: "error.main" }}
+                slotProps={{
+                  primary: { variant: "body2", fontWeight: 500, color: "error.main" },
+                }}
               />
             </MenuItem>
           </Menu>
@@ -375,21 +377,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                         bgcolor: "white",
                       }}
                     />
-                  }
-                  checkedIcon={
-                    <Box
-                      sx={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: 1,
-                        bgcolor: "#6366f1",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Check sx={{ fontSize: 16, color: "white" }} />
-                    </Box>
                   }
                 />
                 <Typography
