@@ -1,15 +1,17 @@
+"use client";
+
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import { TaskAlt, CalendarMonth, Archive, Settings } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useRouter, usePathname } from "next/navigation";
 
 export const BottomNav = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const router = useRouter();
+    const pathname = usePathname();
 
     const getValue = () => {
-        if (location.pathname === '/schedule') return 1;
-        if (location.pathname === '/archive') return 2;
-        if (location.pathname === '/settings') return 3;
+        if (pathname === '/schedule') return 1;
+        if (pathname === '/archive') return 2;
+        if (pathname === '/settings') return 3;
         return 0;
     };
 
@@ -25,10 +27,10 @@ export const BottomNav = () => {
                 value={value}
                 onChange={(_, newValue) => {
                     switch (newValue) {
-                        case 0: navigate('/'); break;
-                        case 1: navigate('/schedule'); break;
-                        case 2: navigate('/archive'); break;
-                        case 3: navigate('/settings'); break;
+                        case 0: router.push('/'); break;
+                        case 1: router.push('/schedule'); break;
+                        case 2: router.push('/archive'); break;
+                        case 3: router.push('/settings'); break;
                     }
                 }}
                 sx={{

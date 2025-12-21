@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { FloatingActionButton } from "../components/FloatingActionButton";
 import { TaskList } from "../components/TaskList";

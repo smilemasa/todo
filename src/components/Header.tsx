@@ -1,13 +1,15 @@
+"use client";
+
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { usePathname } from "next/navigation";
 import { useTaskContext } from "../context/TaskContext";
 
 export const Header = () => {
     const { uncompletedCount } = useTaskContext();
-    const location = useLocation();
+    const pathname = usePathname();
 
-    const isSettings = location.pathname === '/settings';
-    const isArchive = location.pathname === '/archive';
+    const isSettings = pathname === '/settings';
+    const isArchive = pathname === '/archive';
     const title = isArchive ? 'アーカイブ' : (isSettings ? '設定' : 'TODOリスト');
 
     return (

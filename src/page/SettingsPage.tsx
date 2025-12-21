@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, Typography, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from "@mui/material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
