@@ -37,8 +37,15 @@ export const BottomNav = () => {
                     mx: 'auto',
                     '& .MuiBottomNavigationAction-root': {
                         color: 'text.secondary',
+                        whiteSpace: 'nowrap',
                         '&.Mui-selected': {
                             color: 'primary.main',
+                        },
+                        '& .MuiBottomNavigationAction-label': {
+                            fontSize: '0.75rem',
+                            '&.Mui-selected': {
+                                fontSize: '0.8rem',
+                            }
                         }
                     }
                 }}

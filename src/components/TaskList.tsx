@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
-import { TaskItem, type TaskType } from "./TaskItem";
+import { TaskItem } from "./TaskItem";
+import type { TaskType } from "../types";
 
 type TaskListProps = {
     tasks: TaskType[];

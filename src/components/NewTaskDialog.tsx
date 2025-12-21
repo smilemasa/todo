@@ -14,7 +14,7 @@ import {
     InputAdornment
 } from '@mui/material';
 import { DateRange, KeyboardArrowDown } from '@mui/icons-material';
-import type { TaskType } from './TaskItem';
+import type { TaskType } from '../types';
 
 type NewTaskDialogProps = {
     open: boolean;
@@ -42,8 +42,8 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
                     variant: priority === '高' ? 'warning' : 'default',
                 }
             ],
-            // Simply using the date string for now. In a real app we'd parse this.
-            date: date ? date.replace('-', '/') : undefined,
+            // Format date to YYYY/MM/DD
+            date: date ? date.replace(/-/g, '/') : undefined,
         };
 
         onCreate(newTask);
