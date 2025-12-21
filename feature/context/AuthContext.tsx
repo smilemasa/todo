@@ -1,12 +1,15 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState } from "react"
 import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { useSession, signIn, signOut } from "next-auth/react"
 
 type User = {
   id: string
   name: string
+  email?: string
+  image?: string
   isGuest: boolean
 }
 
@@ -20,65 +23,45 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const STORAGE_KEY = "todo_auth_user"
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [guestUser, setGuestUser] = useState<User | null>(null)
   const router = useRouter()
-
-  useEffect(() => {
-    const initAuth = () => {
-      // Check for persisted user
-      const storedUser = localStorage.getItem(STORAGE_KEY)
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser))
-        } catch (e) {
-          console.error("Failed to parse user from storage", e)
-          localStorage.removeItem(STORAGE_KEY)
-        }
-      }
-      setIsLoading(false)
-    }
-
-    const timer = setTimeout(initAuth, 0)
-    return () => clearTimeout(timer)
-  }, [])
+  const { data: session, status } = useSession()
 
   const loginGoogle = async () => {
-    setIsLoading(true)
-    // Mock Google Login delay
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    const mockUser: User = {
-      id: "google-user-123",
-      name: "Google User",
-      isGuest: false,
-    }
-
-    setUser(mockUser)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(mockUser))
-    setIsLoading(false)
-    router.push("/")
+    await signIn("google", { callbackUrl: "/" })
   }
 
   const loginGuest = () => {
-    const guestUser: User = {
+    const newGuestUser: User = {
       id: "guest-" + Date.now(),
       name: "Guest User",
       isGuest: true,
     }
-    setUser(guestUser)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(guestUser))
+    setGuestUser(newGuestUser)
     router.push("/")
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem(STORAGE_KEY)
-    router.push("/login")
+  const logout = async () => {
+    if (guestUser) {
+      setGuestUser(null)
+      router.push("/login")
+    } else {
+      await signOut({ callbackUrl: "/login" })
+    }
   }
+
+  const user: User | null = session?.user
+    ? {
+        id: (session.user as any).id || session.user.email || "",
+        name: session.user.name || "User",
+        email: session.user.email || undefined,
+        image: session.user.image || undefined,
+        isGuest: false,
+      }
+    : guestUser
+
+  const isLoading = status === "loading"
 
   return (
     <AuthContext.Provider value={{ user, isLoading, loginGoogle, loginGuest, logout }}>
