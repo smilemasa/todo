@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "A simple todo app",
   appleWebApp: {
     capable: true,
+    statusBarStyle: "default",
+    title: "Todo App",
   },
 }
 
