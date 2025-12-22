@@ -38,6 +38,7 @@ export const AddSubTask = ({ onAdd }: AddSubTaskProps) => {
   if (isAdding) {
     return (
       <TextField
+        fullWidth
         autoFocus
         variant="outlined"
         size="small"
