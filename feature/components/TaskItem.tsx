@@ -267,14 +267,14 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: Ta
         </Stack>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Box sx={{ px: 2, pb: 2, pt: 2, borderTop: "1px solid", borderColor: "divider" }}>
+        <Box sx={{ px: 2, pb: 2, pt: 1.5, borderTop: "1px solid", borderColor: "divider" }}>
           <SubTaskList
             subtasks={subtasks}
             onToggle={(subtaskId) => toggleSubtask(task.id, subtaskId)}
           />
 
           {!hideAddSubtask && (
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 0.5 }}>
               <AddSubTask onAdd={(title) => addSubtask(task.id, title)} />
             </Box>
           )}

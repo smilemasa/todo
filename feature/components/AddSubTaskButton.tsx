@@ -16,8 +16,8 @@ export const AddSubTaskButton = ({ onClick }: AddSubTaskButtonProps) => {
         fontSize: "0.9375rem",
         color: "#3b82f6",
         justifyContent: "flex-start",
-        px: 2,
-        py: 1.5,
+        px: 1,
+        py: 0.5,
         bgcolor: "transparent",
         "&:hover": {
           bgcolor: "#f3f4f6",

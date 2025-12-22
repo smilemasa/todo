@@ -24,17 +24,17 @@ export const SubTaskList = ({
   }
 
   return (
-    <Stack spacing={1.5}>
+    <Stack spacing={0.5}>
       {subtasks.map((subtask) => (
         <Box
           key={subtask.id}
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 1.5,
+            gap: 1,
             bgcolor: "transparent",
-            borderRadius: 2,
-            p: 1,
+            borderRadius: 1,
+            p: 0.5,
           }}
         >
           <Checkbox
