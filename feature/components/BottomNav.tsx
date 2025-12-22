@@ -1,7 +1,7 @@
 "use client"
 
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material"
-import { TaskAlt, CalendarMonth, Archive, Settings } from "@mui/icons-material"
+import { TaskAlt, Archive, Settings } from "@mui/icons-material"
 import { useRouter, usePathname } from "next/navigation"
 
 export const BottomNav = () => {
@@ -10,9 +10,8 @@ export const BottomNav = () => {
 
   const getValue = () => {
     if (pathname === "/tasks") return 0
-    if (pathname === "/schedule") return 1
-    if (pathname === "/archive") return 2
-    if (pathname === "/settings") return 3
+    if (pathname === "/archive") return 1
+    if (pathname === "/settings") return 2
     return 0
   }
 
@@ -29,12 +28,9 @@ export const BottomNav = () => {
               router.push("/tasks")
               break
             case 1:
-              router.push("/schedule")
-              break
-            case 2:
               router.push("/archive")
               break
-            case 3:
+            case 2:
               router.push("/settings")
               break
           }
@@ -59,7 +55,6 @@ export const BottomNav = () => {
         }}
       >
         <BottomNavigationAction label="タスク" icon={<TaskAlt />} />
-        <BottomNavigationAction label="予定" icon={<CalendarMonth />} />
         <BottomNavigationAction label="アーカイブ" icon={<Archive />} />
         <BottomNavigationAction label="設定" icon={<Settings />} />
       </BottomNavigation>
