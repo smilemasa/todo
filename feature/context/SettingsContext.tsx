@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState } from "react"
 import type { ReactNode } from "react"
 
 type SettingsContextType = {
@@ -12,23 +12,24 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 const SETTINGS_STORAGE_KEY = "todo-app-settings"
 
-export const SettingsProvider = ({ children }: { children: ReactNode }) => {
-  const [autoCompleteParentTask, setAutoCompleteParentTaskState] = useState(true)
-
-  // Load settings from localStorage on mount
-  useEffect(() => {
-    const savedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY)
-    if (savedSettings) {
-      try {
-        const settings = JSON.parse(savedSettings)
-        if (typeof settings.autoCompleteParentTask === "boolean") {
-          setAutoCompleteParentTaskState(settings.autoCompleteParentTask)
-        }
-      } catch (error) {
-        console.error("Error loading settings:", error)
+const getInitialSettings = () => {
+  if (typeof window === "undefined") return true
+  const savedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY)
+  if (savedSettings) {
+    try {
+      const settings = JSON.parse(savedSettings)
+      if (typeof settings.autoCompleteParentTask === "boolean") {
+        return settings.autoCompleteParentTask
       }
+    } catch (error) {
+      console.error("Error loading settings:", error)
     }
-  }, [])
+  }
+  return true
+}
+
+export const SettingsProvider = ({ children }: { children: ReactNode }) => {
+  const [autoCompleteParentTask, setAutoCompleteParentTaskState] = useState(getInitialSettings)
 
   // Save settings to localStorage whenever they change
   const setAutoCompleteParentTask = (value: boolean) => {
