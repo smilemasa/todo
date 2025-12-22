@@ -14,15 +14,14 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
+import { useTaskContext } from "../context/TaskContext"
+import { sortTasks } from "../utils/sortTasks"
 
-type TaskListProps = {
-  tasks: TaskType[]
-  onToggle: (id: string) => void
-  onReorder?: (newTasks: TaskType[]) => void
-  sortKey?: string
-}
+export const TaskList = () => {
+  const { tasks, toggleTask, sortConfig, reorderTasks } = useTaskContext()
 
-export const TaskList = ({ tasks, onToggle, onReorder, sortKey }: TaskListProps) => {
+  const displayTasks = sortTasks(tasks, sortConfig)
+
   // Configure touch sensor with delay for long press activation
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -46,16 +45,26 @@ export const TaskList = ({ tasks, onToggle, onReorder, sortKey }: TaskListProps)
       return
     }
 
-    const oldIndex = tasks.findIndex((task) => task.id === active.id)
-    const newIndex = tasks.findIndex((task) => task.id === over.id)
+    const oldIndex = displayTasks.findIndex((task) => task.id === active.id)
+    const newIndex = displayTasks.findIndex((task) => task.id === over.id)
 
-    const newTasks = arrayMove(tasks, oldIndex, newIndex)
-    onReorder?.(newTasks)
+    const newTasks = arrayMove(displayTasks, oldIndex, newIndex)
+
+    // 完了済みタスクと未完了タスクを分離
+    const completedTasks = tasks.filter((task) => task.completed)
+    
+    // 降順の場合は、表示順序と実際のorder値が逆になるため、配列を反転
+    const orderedTasks = sortConfig.direction === "desc" ? [...newTasks].reverse() : newTasks
+    
+    // 新しい順序で未完了タスクを配置し、その後に完了済みタスクを追加
+    const reorderedTasks = [...orderedTasks, ...completedTasks]
+    
+    reorderTasks(reorderedTasks)
   }
 
-  const isCustomSort = sortKey === "custom"
+  const isCustomSort = sortConfig.key === "custom"
 
-  if (tasks.length === 0) {
+  if (displayTasks.length === 0) {
     return (
       <Box
         sx={{
@@ -80,13 +89,13 @@ export const TaskList = ({ tasks, onToggle, onReorder, sortKey }: TaskListProps)
   }
 
   // Enable drag and drop only for custom sort
-  if (isCustomSort && onReorder) {
+  if (isCustomSort) {
     return (
       <Box sx={{ px: 2, pt: 2, pb: "140px" }} role="list" aria-label="タスク一覧">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext items={displayTasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
             <AnimatePresence mode="popLayout" initial={false}>
-              {tasks.map((task) => (
+              {displayTasks.map((task) => (
                 <motion.div
                   key={task.id}
                   layout
@@ -95,7 +104,7 @@ export const TaskList = ({ tasks, onToggle, onReorder, sortKey }: TaskListProps)
                   exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                   transition={{ duration: 0.2 }}
                 >
-                  <SortableTaskItem task={task} onToggle={onToggle} />
+                  <SortableTaskItem task={task} onToggle={toggleTask} />
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -108,7 +117,7 @@ export const TaskList = ({ tasks, onToggle, onReorder, sortKey }: TaskListProps)
   return (
     <Box sx={{ px: 2, pt: 2, pb: "140px" }} role="list" aria-label="タスク一覧">
       <AnimatePresence mode="popLayout" initial={false}>
-        {tasks.map((task) => (
+        {displayTasks.map((task) => (
           <motion.div
             key={task.id}
             layout
@@ -118,7 +127,7 @@ export const TaskList = ({ tasks, onToggle, onReorder, sortKey }: TaskListProps)
             transition={{ duration: 0.2 }}
             style={{ marginBottom: "16px" }}
           >
-            <TaskItem task={task} onToggle={onToggle} />
+            <TaskItem task={task} onToggle={toggleTask} />
           </motion.div>
         ))}
       </AnimatePresence>

@@ -15,14 +15,15 @@ import {
 } from "@mui/material"
 import { DateRange, KeyboardArrowDown } from "@mui/icons-material"
 import type { TaskType } from "../types"
+import { useTaskContext } from "../context/TaskContext"
 
 type NewTaskDialogProps = {
   open: boolean
   onClose: () => void
-  onCreate: (task: Omit<TaskType, "id" | "completed" | "createdAt" | "order">) => void
 }
 
-export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) => {
+export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
+  const { addTask } = useTaskContext()
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [priority, setPriority] = useState("中") // Default to Medium
@@ -46,7 +47,7 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
       deadline: date ? date.replace(/-/g, "/") : undefined,
     }
 
-    onCreate(newTask)
+    addTask(newTask)
     resetForm()
     onClose()
   }
