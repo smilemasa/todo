@@ -9,9 +9,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Button,
   Collapse,
-  TextField,
 } from "@mui/material"
 import {
   Check,
@@ -21,13 +19,13 @@ import {
   DeleteOutline,
   ExpandMore,
   ExpandLess,
-  Add,
 } from "@mui/icons-material"
 import { useState } from "react"
 import type { TaskType } from "../types"
 import { useTaskContext } from "../context/TaskContext"
 import { EditTaskDialog } from "./EditTaskDialog"
 import { SubTaskList } from "./SubTaskList"
+import { AddSubTask } from "./AddSubTask"
 
 // デザインシステムの定数
 const CARD_SPACING = {
@@ -67,6 +65,8 @@ const TAG_COLORS = {
   subtaskBg: "#6366f1", // indigo-500
 } as const
 
+import { PRIORITY_COLORS, PRIORITY_LABELS } from "../constants"
+
 type TaskItemProps = {
   task: TaskType
   onToggle: (id: string) => void
@@ -77,8 +77,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
   const { addSubtask, toggleSubtask, deleteTask, duplicateTask, updateTask } = useTaskContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [expanded, setExpanded] = useState(false)
-  const [isAddingSubtask, setIsAddingSubtask] = useState(false)
-  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const open = Boolean(anchorEl)
 
@@ -193,6 +191,22 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             )}
 
             <Stack direction="row" flexWrap="wrap" gap={1} alignItems="center">
+              {task.priority && (
+                <Box
+                  component="span"
+                  sx={{
+                    bgcolor: PRIORITY_COLORS[task.priority].background,
+                    color: PRIORITY_COLORS[task.priority].text,
+                    px: 1,
+                    py: 0.25,
+                    borderRadius: 99,
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  {PRIORITY_LABELS[task.priority]}
+                </Box>
+              )}
               {task.deadline && (
                 <Box
                   sx={{
@@ -204,50 +218,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                   }}
                 >
                   <span>{task.deadline}</span>
-                  {task.deadlineCurrent && (
-                    <Box
-                      component="span"
-                      sx={{
-                        bgcolor: TAG_COLORS.date.background,
-                        color: TAG_COLORS.date.text,
-                        px: 1,
-                        borderRadius: 99,
-                        fontSize: "0.75rem",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {task.deadlineCurrent}
-                    </Box>
-                  )}
-                </Box>
-              )}
-
-              {task.date && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    color: "text.secondary",
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  <span>{task.date}</span>
-                  {task.dateCurrent && (
-                    <Box
-                      component="span"
-                      sx={{
-                        bgcolor: TAG_COLORS.date.background,
-                        color: TAG_COLORS.date.text,
-                        px: 1,
-                        borderRadius: 99,
-                        fontSize: "0.75rem",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {task.dateCurrent}
-                    </Box>
-                  )}
                 </Box>
               )}
 
@@ -379,58 +349,11 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             onToggle={(subtaskId) => toggleSubtask(task.id, subtaskId)}
           />
 
-          {!hideAddSubtask &&
-            (isAddingSubtask ? (
-              <TextField
-                fullWidth
-                variant="outlined"
-                size="small"
-                placeholder="新しいサブタスクを入力"
-                value={newSubtaskTitle}
-                onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    if (newSubtaskTitle.trim()) {
-                      addSubtask(task.id, newSubtaskTitle)
-                      setNewSubtaskTitle("")
-                      setIsAddingSubtask(false)
-                    }
-                  } else if (e.key === "Escape") {
-                    setIsAddingSubtask(false)
-                    setNewSubtaskTitle("")
-                  }
-                }}
-                onBlur={() => {
-                  if (!newSubtaskTitle.trim()) {
-                    setIsAddingSubtask(false)
-                  }
-                }}
-                autoFocus
-                sx={{
-                  mt: 2,
-                  "& .MuiOutlinedInput-root": {
-                    bgcolor: "white",
-                  },
-                }}
-              />
-            ) : (
-              <Button
-                startIcon={<Add />}
-                onClick={() => setIsAddingSubtask(true)}
-                sx={{
-                  mt: 2,
-                  textTransform: "none",
-                  fontWeight: 500,
-                  fontSize: "0.9375rem",
-                  color: "#3b82f6",
-                  p: 0,
-                }}
-                disableRipple
-              >
-                サブタスクを追加
-              </Button>
-            ))}
+          {!hideAddSubtask && (
+            <Box sx={{ mt: 2 }}>
+              <AddSubTask onAdd={(title) => addSubtask(task.id, title)} />
+            </Box>
+          )}
         </Box>
       </Collapse>
 

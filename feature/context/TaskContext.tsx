@@ -15,8 +15,15 @@ type TaskContextType = {
   duplicateTask: (id: string) => void
   addSubtask: (taskId: string, title: string) => void
   toggleSubtask: (taskId: string, subtaskId: string) => void
+  sortConfig: SortConfig
+  setSortConfig: (config: SortConfig) => void
   uncompletedCount: number
   isLoading: boolean
+}
+
+export type SortConfig = {
+  key: "priority" | "date" | "custom"
+  direction: "asc" | "desc"
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined)
@@ -27,6 +34,7 @@ const INITIAL_TASKS: TaskType[] = [
     title: "チームミーティングの準備",
     description: "資料を3部印刷する",
     completed: false,
+    priority: "medium",
   },
   {
     id: "2",
@@ -38,34 +46,39 @@ const INITIAL_TASKS: TaskType[] = [
       { id: "s2", title: "週報フォーマットに入力", completed: false },
       { id: "s3", title: "上司に提出", completed: false },
     ],
+    priority: "medium",
   },
   {
     id: "3",
     title: "プロジェクト企画書のレビュー",
     completed: false,
+    priority: "medium",
   },
   {
     id: "4",
     title: "クライアントへの提案書作成",
     completed: false,
+    priority: "medium",
   },
   {
     id: "5",
     title: "デザインレビューミーティング",
-    date: "2025/01/20",
-    dateCurrent: "2025/01/04",
+    deadline: "2025/01/20",
     completed: false,
+    priority: "high",
   },
   {
     id: "6",
     title: "買い物リスト確認",
     completed: false,
+    priority: "low",
   },
 ]
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [tasks, setTasks] = useState<TaskType[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "custom", direction: "desc" })
   const { data: session, status } = useSession()
   const { user } = useAuth()
 
@@ -105,7 +118,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
 
     loadTasks()
-  }, [isAuthenticated, status, user?.isGuest]) // 必要な依存関係のみを指定
+  }, [isAuthenticated, status, user?.isGuest])
 
   const addTask = async (task: Omit<TaskType, "id" | "completed">) => {
     const newTask: TaskType = {
@@ -117,7 +130,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // 楽観的更新: ローカル状態を先に更新
     setTasks((prev) => [newTask, ...prev])
 
-    // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
         const response = await fetch("/api/tasks", {
@@ -162,7 +174,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
       })
     )
 
-    // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
         const updatedTask = {
@@ -197,7 +208,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // ローカル状態を更新
     setTasks((prev) => prev.map((t) => (t.id === id ? updatedTask : t)))
 
-    // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
         const response = await fetch(`/api/tasks/${id}`, {
@@ -270,7 +280,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
       return newTasks
     })
 
-    // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
         const response = await fetch("/api/tasks", {
@@ -314,7 +323,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // ローカル状態を更新
     setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)))
 
-    // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
         const response = await fetch(`/api/tasks/${taskId}`, {
@@ -360,7 +368,6 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // ローカル状態を更新
     setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)))
 
-    // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
         const response = await fetch(`/api/tasks/${taskId}`, {
@@ -396,6 +403,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         duplicateTask,
         addSubtask,
         toggleSubtask,
+        sortConfig,
+        setSortConfig,
         uncompletedCount,
         isLoading,
       }}

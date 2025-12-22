@@ -11,12 +11,8 @@ export type TaskType = {
   title: string
   description?: string
   deadline?: string
-  deadlineCurrent?: string
-  date?: string
-  dateCurrent?: string
   completed: boolean
   subtasks?: SubTask[]
-  priority?: Priority
-  memo?: string
+  priority: Priority
   completedAt?: string
 }

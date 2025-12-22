@@ -41,17 +41,9 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
       title,
       description: description || undefined,
       // Handle priority as a tag for now, as per existing data structure
-      tags:
-        priority === "中"
-          ? undefined
-          : [
-              {
-                text: priority,
-                variant: priority === "高" ? "warning" : "default",
-              },
-            ],
+      priority: priority === "高" ? "high" : priority === "中" ? "medium" : "low",
       // Format date to YYYY/MM/DD
-      date: date ? date.replace(/-/g, "/") : undefined,
+      deadline: date ? date.replace(/-/g, "/") : undefined,
     }
 
     onCreate(newTask)
@@ -87,7 +79,10 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
       <DialogContent>
         <Box sx={{ mb: 3 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
-            タスク名 <Box component="span" sx={{ color: "error.main" }}>*</Box>
+            タスク名{" "}
+            <Box component="span" sx={{ color: "error.main" }}>
+              *
+            </Box>
           </Typography>
           <TextField
             fullWidth

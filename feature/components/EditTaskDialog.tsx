@@ -17,7 +17,7 @@ import { Close, Check, CalendarToday, Flag, EditOutlined } from "@mui/icons-mate
 import { useState } from "react"
 import type { TaskType, SubTask, Priority } from "../types"
 import { SubTaskList } from "./SubTaskList"
-import { AddSubTaskButton } from "./AddSubTaskButton"
+import { AddSubTask } from "./AddSubTask"
 
 type EditTaskDialogProps = {
   open: boolean
@@ -26,36 +26,15 @@ type EditTaskDialogProps = {
   onSave: (updatedTask: TaskType) => void
 }
 
-const PRIORITY_COLORS = {
-  low: {
-    background: "#dbeafe", // blue-100
-    text: "#1e40af", // blue-800
-  },
-  medium: {
-    background: "#fef3c7", // yellow-100
-    text: "#92400e", // yellow-900
-  },
-  high: {
-    background: "#fee2e2", // red-100
-    text: "#991b1b", // red-800
-  },
-} as const
-
-const PRIORITY_LABELS: Record<Priority, string> = {
-  low: "低",
-  medium: "中",
-  high: "高",
-}
+import { PRIORITY_COLORS, PRIORITY_LABELS } from "../constants"
 
 export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogProps) => {
   const [title, setTitle] = useState(task.title)
   const [completed, setCompleted] = useState(task.completed)
   const [deadline, setDeadline] = useState(task.deadline || "")
   const [priority, setPriority] = useState<Priority>(task.priority || "medium")
-  const [memo, setMemo] = useState(task.memo || "")
+  const [description, setDescription] = useState(task.description || "")
   const [subtasks, setSubtasks] = useState<SubTask[]>(task.subtasks || [])
-  const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
-  const [showSubtaskInput, setShowSubtaskInput] = useState(false)
   const [titleError, setTitleError] = useState(false)
 
   // Reset form when task changes
@@ -68,27 +47,13 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
     )
   }
 
-  const handleAddSubtask = () => {
-    if (newSubtaskTitle.trim()) {
-      const newSubtask: SubTask = {
-        id: Date.now().toString(),
-        title: newSubtaskTitle.trim(),
-        completed: false,
-      }
-      setSubtasks((prev) => [...prev, newSubtask])
-      setNewSubtaskTitle("")
-      setShowSubtaskInput(false)
+  const handleAddSubtask = (title: string) => {
+    const newSubtask: SubTask = {
+      id: Date.now().toString(),
+      title: title.trim(),
+      completed: false,
     }
-  }
-
-  const handleKeyDownSubtask = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault()
-      handleAddSubtask()
-    } else if (e.key === "Escape") {
-      setNewSubtaskTitle("")
-      setShowSubtaskInput(false)
-    }
+    setSubtasks((prev) => [...prev, newSubtask])
   }
 
   const handleDeleteSubtask = (subtaskId: string) => {
@@ -109,7 +74,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
       completed,
       deadline,
       priority,
-      memo,
+      description,
       subtasks,
     }
     onSave(updatedTask)
@@ -243,35 +208,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
               showDeleteButton={true}
             />
 
-            {showSubtaskInput ? (
-              <TextField
-                id="new-subtask-input"
-                fullWidth
-                autoFocus
-                placeholder="サブタスク名を入力"
-                value={newSubtaskTitle}
-                onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                onKeyDown={handleKeyDownSubtask}
-                onBlur={() => {
-                  if (!newSubtaskTitle.trim()) {
-                    setShowSubtaskInput(false)
-                  }
-                }}
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
-                    bgcolor: "#fafafa",
-                  },
-                }}
-              />
-            ) : (
-              <AddSubTaskButton
-                onClick={() => {
-                  setShowSubtaskInput(true)
-                }}
-              />
-            )}
+            <AddSubTask onAdd={handleAddSubtask} />
           </Stack>
         </Box>
 
@@ -365,21 +302,21 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
           </Box>
         </Box>
 
-        {/* メモ */}
+        {/* 説明 */}
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
             <EditOutlined sx={{ fontSize: 20, color: "text.secondary" }} />
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              メモ
+              説明
             </Typography>
           </Box>
           <TextField
             fullWidth
             multiline
             rows={3}
-            value={memo}
-            onChange={(e) => setMemo(e.target.value)}
-            placeholder="メモを入力"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="説明を入力"
             size="small"
             sx={{
               pl: 4.5,
