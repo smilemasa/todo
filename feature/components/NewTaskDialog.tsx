@@ -19,7 +19,7 @@ import type { TaskType } from "../types"
 type NewTaskDialogProps = {
   open: boolean
   onClose: () => void
-  onCreate: (task: Omit<TaskType, "id" | "completed">) => void
+  onCreate: (task: Omit<TaskType, "id" | "completed" | "createdAt" | "order">) => void
 }
 
 export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) => {
@@ -37,7 +37,7 @@ export const NewTaskDialog = ({ open, onClose, onCreate }: NewTaskDialogProps) =
     }
     setTitleError(false)
 
-    const newTask: Omit<TaskType, "id" | "completed"> = {
+    const newTask: Omit<TaskType, "id" | "completed" | "createdAt" | "order"> = {
       title,
       description: description || undefined,
       // Handle priority as a tag for now, as per existing data structure

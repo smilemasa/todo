@@ -22,6 +22,8 @@ import {
 } from "@mui/icons-material"
 import { useState } from "react"
 import type { TaskType } from "../types"
+import type { DraggableAttributes } from "@dnd-kit/core"
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities"
 import { useTaskContext } from "../context/TaskContext"
 import { EditTaskDialog } from "./EditTaskDialog"
 import { SubTaskList } from "./SubTaskList"
@@ -71,9 +73,13 @@ type TaskItemProps = {
   task: TaskType
   onToggle: (id: string) => void
   hideAddSubtask?: boolean
+  dragHandleProps?: {
+    attributes: DraggableAttributes
+    listeners: SyntheticListenerMap | undefined
+  }
 }
 
-export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
+export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: TaskItemProps) => {
   const { addSubtask, toggleSubtask, deleteTask, duplicateTask, updateTask } = useTaskContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [expanded, setExpanded] = useState(false)
@@ -121,21 +127,17 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
       }}
       role="listitem"
     >
-      <Box
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={2}
         onClick={() => setExpanded(!expanded)}
         sx={{
+          p: CARD_SPACING.padding,
           cursor: "pointer",
         }}
       >
-        <Box
-          sx={{
-            p: CARD_SPACING.padding,
-            display: "flex",
-            alignItems: "flex-start",
-            gap: 2,
-          }}
-        >
-          <Checkbox
+        <Checkbox
             checked={task.completed}
             onChange={handleToggle}
             onClick={handleCheckboxClick}
@@ -240,7 +242,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             </Stack>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 0.5, mt: -0.5, mr: -1 }}>
+          <Box sx={{ display: "flex", gap: 0.5 }}>
             <IconButton
               size="small"
               sx={{ color: "text.secondary" }}
@@ -339,8 +341,30 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
               />
             </MenuItem>
           </Menu>
-        </Box>
-      </Box>
+                  {dragHandleProps && (
+          <Box
+            {...dragHandleProps.attributes}
+            {...dragHandleProps.listeners}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              cursor: "grab",
+              "&:active": {
+                cursor: "grabbing",
+              },
+              touchAction: "none",
+              mt: 0.5,
+            }}
+          >
+            <Box component="svg" sx={{ width: 20, height: 20 }} viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M9 3h2v2H9V3zm4 0h2v2h-2V3zM9 7h2v2H9V7zm4 0h2v2h-2V7zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"
+              />
+            </Box>
+          </Box>
+        )}
+        </Stack>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <Box sx={{ px: 2, pb: 2, pt: 2, borderTop: "1px solid", borderColor: "divider" }}>

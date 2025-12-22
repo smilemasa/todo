@@ -9,13 +9,14 @@ import { v4 as uuidv4 } from "uuid"
 
 type TaskContextType = {
   tasks: TaskType[]
-  addTask: (task: Omit<TaskType, "id" | "completed">) => void
+  addTask: (task: Omit<TaskType, "id" | "completed" | "createdAt" | "order">) => void
   updateTask: (id: string, updatedTask: TaskType) => void
   toggleTask: (id: string) => void
   deleteTask: (id: string) => void
   duplicateTask: (id: string) => void
   addSubtask: (taskId: string, title: string) => void
   toggleSubtask: (taskId: string, subtaskId: string) => void
+  reorderTasks: (newTasks: TaskType[]) => void
   sortConfig: SortConfig
   setSortConfig: (config: SortConfig) => void
   uncompletedCount: number
@@ -91,7 +92,7 @@ const INITIAL_TASKS: TaskType[] = [
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [tasks, setTasks] = useState<TaskType[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "custom", direction: "desc" })
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "custom", direction: "asc" })
   const { data: session, status } = useSession()
   const { user } = useAuth()
 
@@ -133,7 +134,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     loadTasks()
   }, [isAuthenticated, status, user?.isGuest])
 
-  const addTask = async (task: Omit<TaskType, "id" | "completed">) => {
+  const addTask = async (task: Omit<TaskType, "id" | "completed" | "createdAt" | "order">) => {
     const minOrder = tasks.length > 0 ? Math.min(...tasks.map((t) => t.order)) : 0
     const newTask: TaskType = {
       ...task,
@@ -433,6 +434,42 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const reorderTasks = async (newTasks: TaskType[]) => {
+    // Calculate new order values based on array index
+    const tasksWithNewOrder = newTasks.map((task, index) => ({
+      ...task,
+      order: index,
+    }))
+
+    // 楽観的更新: 現在の状態を保存
+    const previousTasks = tasks
+
+    // ローカル状態を更新
+    setTasks(tasksWithNewOrder)
+
+    if (isAuthenticated) {
+      try {
+        // Bulk update - send all tasks with new orders
+        const response = await fetch("/api/tasks", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tasks: tasksWithNewOrder }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Failed to reorder tasks: ${response.status}`)
+        }
+      } catch (error) {
+        console.error("Error reordering tasks:", error)
+        // エラー時はロールバック
+        setTasks(previousTasks)
+        // TODO: ユーザーにエラー通知を表示
+      }
+    }
+  }
+
   const uncompletedCount = tasks.filter((t) => !t.completed).length
 
   return (
@@ -446,6 +483,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         duplicateTask,
         addSubtask,
         toggleSubtask,
+        reorderTasks,
         sortConfig,
         setSortConfig,
         uncompletedCount,
