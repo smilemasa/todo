@@ -30,7 +30,9 @@ export const AddSubTask = ({ onAdd }: AddSubTaskProps) => {
   }
 
   const handleBlur = () => {
-    if (!title.trim()) {
+    if (title.trim()) {
+      handleAdd()
+    } else {
       setIsAdding(false)
     }
   }
