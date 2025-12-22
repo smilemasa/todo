@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { FloatingActionButton } from "../components/FloatingActionButton"
-import { TaskList } from "../components/TaskList"
-import { NewTaskDialog } from "../components/NewTaskDialog"
-import { Header } from "../components/Header"
-import { SortMenu } from "../components/SortMenu"
-import { TaskCountBadge } from "../components/TaskCountBadge"
+import { FloatingActionButton } from "./components/FloatingActionButton"
+import { TaskList } from "./components/TaskList"
+import { NewTaskDialog } from "./components/NewTaskDialog"
+import { Header } from "../../components/Header"
+import { SortMenu } from "./components/SortMenu"
+import { TaskCountBadge } from "./components/TaskCountBadge"
 import { Box } from "@mui/material"
 
 export const TasksPage = () => {

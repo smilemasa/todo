@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { TaskItem } from "./TaskItem"
-import type { TaskType } from "../types"
+import { TaskItem } from "../../../components/TaskItem"
+import type { TaskType } from "../../../types"
 import { Box } from "@mui/material"
 
 type SortableTaskItemProps = {

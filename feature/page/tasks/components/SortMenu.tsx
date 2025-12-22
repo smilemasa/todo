@@ -10,7 +10,7 @@ import {
   PriorityHigh,
   FormatListBulleted,
 } from "@mui/icons-material"
-import { useTaskContext, type SortConfig } from "../context/TaskContext"
+import { useTaskContext, type SortConfig } from "../../../context/TaskContext"
 
 export const SortMenu = () => {
   const { sortConfig, setSortConfig } = useTaskContext()

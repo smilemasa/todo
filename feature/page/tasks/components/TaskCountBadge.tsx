@@ -1,7 +1,7 @@
 "use client"
 
 import { Box } from "@mui/material"
-import { useTaskContext } from "../context/TaskContext"
+import { useTaskContext } from "../../../context/TaskContext"
 
 export const TaskCountBadge = () => {
   const { uncompletedCount } = useTaskContext()

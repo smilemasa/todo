@@ -14,8 +14,8 @@ import {
   InputAdornment,
 } from "@mui/material"
 import { DateRange, KeyboardArrowDown } from "@mui/icons-material"
-import type { TaskType } from "../types"
-import { useTaskContext } from "../context/TaskContext"
+import type { TaskType } from "../../../types"
+import { useTaskContext } from "../../../context/TaskContext"
 
 type NewTaskDialogProps = {
   open: boolean

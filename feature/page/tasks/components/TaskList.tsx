@@ -1,8 +1,7 @@
 import { Box, Typography, Stack } from "@mui/material"
 import { CheckCircleOutline } from "@mui/icons-material"
-import { TaskItem } from "./TaskItem"
+import { TaskItem } from "../../../components/TaskItem"
 import { SortableTaskItem } from "./SortableTaskItem"
-import type { TaskType } from "../types"
 import { AnimatePresence, motion } from "framer-motion"
 import {
   DndContext,
@@ -14,8 +13,8 @@ import {
   DragEndEvent,
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
-import { useTaskContext } from "../context/TaskContext"
-import { sortTasks } from "../utils/sortTasks"
+import { useTaskContext } from "../../../context/TaskContext"
+import { sortTasks } from "../../../utils/sortTasks"
 
 export const TaskList = () => {
   const { tasks, toggleTask, sortConfig, reorderTasks } = useTaskContext()

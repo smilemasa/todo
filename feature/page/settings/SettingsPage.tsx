@@ -10,13 +10,13 @@ import {
   ListItemText,
   Paper,
 } from "@mui/material"
-import { Header } from "../components/Header"
+import { Header } from "../../components/Header"
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import LogoutIcon from "@mui/icons-material/Logout"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../../context/AuthContext"
 
 export const SettingsPage = () => {
   const { logout } = useAuth()

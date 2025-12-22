@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { Box, InputBase, IconButton, Paper, Stack } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
-import { useTaskContext } from "../context/TaskContext"
-import { Header } from "../components/Header"
-import { TaskItem } from "../components/TaskItem"
+import { useTaskContext } from "../../context/TaskContext"
+import { Header } from "../../components/Header"
+import { TaskItem } from "../../components/TaskItem"
 
 export const ArchivePage = () => {
   const { tasks, toggleTask } = useTaskContext()

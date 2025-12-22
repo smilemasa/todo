@@ -3,7 +3,7 @@
 import { Box, Button, Typography, Paper, Divider } from "@mui/material"
 import GoogleIcon from "@mui/icons-material/Google"
 import PersonIcon from "@mui/icons-material/Person"
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../../context/AuthContext"
 
 export const LoginPage = () => {
   const { loginGoogle, loginGuest, isLoading } = useAuth()
