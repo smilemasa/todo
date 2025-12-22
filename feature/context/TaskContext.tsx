@@ -25,7 +25,7 @@ type TaskContextType = {
 }
 
 export type SortConfig = {
-  key: "priority" | "date" | "custom"
+  key: "priority" | "date" | "deadline" | "custom"
   direction: "asc" | "desc"
 }
 

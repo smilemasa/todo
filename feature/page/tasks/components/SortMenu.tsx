@@ -7,6 +7,7 @@ import {
   ArrowUpward,
   ArrowDownward,
   CalendarToday,
+  Event,
   PriorityHigh,
   FormatListBulleted,
 } from "@mui/icons-material"
@@ -110,6 +111,18 @@ export const SortMenu = () => {
           </ListItemIcon>
           <ListItemText>作成日順</ListItemText>
           {sortConfig.key === "date" &&
+            (sortConfig.direction === "desc" ? (
+              <ArrowDownward fontSize="small" sx={{ ml: 1, opacity: 0.7 }} />
+            ) : (
+              <ArrowUpward fontSize="small" sx={{ ml: 1, opacity: 0.7 }} />
+            ))}
+        </MenuItem>
+        <MenuItem onClick={() => handleSortChange("deadline")} selected={sortConfig.key === "deadline"}>
+          <ListItemIcon>
+            <Event fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>期限日順</ListItemText>
+          {sortConfig.key === "deadline" &&
             (sortConfig.direction === "desc" ? (
               <ArrowDownward fontSize="small" sx={{ ml: 1, opacity: 0.7 }} />
             ) : (

@@ -1,7 +1,7 @@
 import { TaskType } from "../types"
 
 export type SortConfig = {
-  key: "priority" | "date" | "custom"
+  key: "priority" | "date" | "deadline" | "custom"
   direction: "asc" | "desc"
 }
 
@@ -20,6 +20,12 @@ export const sortTasks = (tasks: TaskType[], sortConfig: SortConfig): TaskType[]
 
     if (sortConfig.key === "date") {
       return (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) * direction
+    }
+
+    if (sortConfig.key === "deadline") {
+      const deadlineA = a.deadline ? new Date(a.deadline).getTime() : Infinity
+      const deadlineB = b.deadline ? new Date(b.deadline).getTime() : Infinity
+      return (deadlineA - deadlineB) * direction
     }
 
     if (sortConfig.key === "custom") {
