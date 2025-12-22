@@ -20,10 +20,10 @@ const createMockTask = (
 
 describe("sortTasks", () => {
   const tasks: TaskType[] = [
-    createMockTask("1", "low", false, "2024-01-01T00:00:00.000Z", 3), // Date: Jan 1, Order: 3
-    createMockTask("2", "high", false, "2024-01-02T00:00:00.000Z", 1), // Date: Jan 2, Order: 1
-    createMockTask("3", "medium", false, "2024-01-03T00:00:00.000Z", 2), // Date: Jan 3, Order: 2
-    createMockTask("4", "high", true, "2024-01-04T00:00:00.000Z", 4), // Completed task
+    createMockTask("1", "low", false, "2024-01-01T00:00:00.000Z", 3),
+    createMockTask("2", "high", false, "2024-01-02T00:00:00.000Z", 1),
+    createMockTask("3", "medium", false, "2024-01-03T00:00:00.000Z", 2),
+    createMockTask("4", "high", true, "2024-01-04T00:00:00.000Z", 4),
   ]
 
   it("should return only uncompleted tasks when the input contains completed tasks", () => {

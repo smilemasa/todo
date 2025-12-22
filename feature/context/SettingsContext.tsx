@@ -31,7 +31,7 @@ const getInitialSettings = () => {
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const [autoCompleteParentTask, setAutoCompleteParentTaskState] = useState(getInitialSettings)
 
-  // Save settings to localStorage whenever they change
+  // 設定変更時にlocalStorageに保存
   const setAutoCompleteParentTask = (value: boolean) => {
     setAutoCompleteParentTaskState(value)
     const settings = { autoCompleteParentTask: value }

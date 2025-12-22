@@ -164,9 +164,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error creating task:", error)
-        // エラー時はロールバック
         setTasks((prev) => prev.filter((t) => t.id !== newTask.id))
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -213,9 +211,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error updating task:", error)
-        // エラー時はロールバック
+
         setTasks(previousTasks)
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -242,9 +239,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error updating task:", error)
-        // エラー時はロールバック
+
         setTasks(previousTasks)
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -268,9 +264,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error deleting task:", error)
-        // エラー時はロールバック
+
         setTasks(previousTasks)
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -279,41 +274,16 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const taskToDuplicate = tasks.find((t) => t.id === id)
     if (!taskToDuplicate) return
 
-    // 新しいタスクを作成（IDを新規生成し、completedをfalseに、サブタスクもすべてfalseに）
+    // 新しいタスクを作成（ID、サブタスクIDを新規生成し、completedをfalseに設定）
     const newTask: TaskType = {
       ...taskToDuplicate,
       id: uuidv4(),
       completed: false,
       createdAt: new Date().toISOString(),
-      // Insert duplicate right after original, or at top? Let's put it at top for simplicity in logic or same order?
-      // For now, let's treat it as a new task at the top (order logic same as add).
-      // Or better, make it adjacent to original? The UI code splices it in `index + 1`.
-      // So order should be between original and next?
-      // Since we use integer orders, reordering everything is expensive.
-      // For now, let's stick to the splicing logic in local state for position, but field-wise...
-      // If we rely on `order` field for sorting, we need valid order.
-      // Let's just give it a new order at top to match "new task" behavior for now, or just `min - 1`
-      // But wait, the splice puts it next to original.
-      // To keep implementation simple and consistent with "add task", I will use minOrder - 1 and let it jump to top if re-sorted by order.
-      // BUT, the `duplicateTask` implementation splices it into the array:
-      // const newTasks = [...prev]
-      // newTasks.splice(index + 1, 0, newTask)
-      // So visual order is enforced by array position.
-      // If we sort by `order`, this might break.
-      // Let's defer strict order management for duplicate until full D&D.
-      // For now, I'll give it `order: original.order`? No duplicate keys.
-      // I'll leave `order` as `min - 1` and let the UI splice handle it if custom sort is just array order.
-      // Users current custom sort logic:
-      // return sortConfig.key === "custom" ? ...activeTasks ... : sortedTasks
-      // It uses `activeTasks` (filter result).
-      // So array order MATTERS locally.
-      // `order` field is for persistence effectively.
       order: (tasks.length > 0 ? Math.min(...tasks.map((t) => t.order)) : 0) - 1,
       subtasks: taskToDuplicate.subtasks?.map((st) => ({
         ...st,
-        id: uuidv4(), // Use uuid for subtasks too? Or simple id?
-        // Original code used Date.now() + st.id.
-        // Let's use uuidv4() for subtasks too if we want consistency.
+        id: uuidv4(),
         completed: false,
       })),
     }
@@ -341,9 +311,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error duplicating task:", error)
-        // エラー時はロールバック
+
         setTasks((prev) => prev.filter((t) => t.id !== newTask.id))
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -384,9 +353,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error adding subtask:", error)
-        // エラー時はロールバック
+
         setTasks(previousTasks)
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -429,9 +397,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error toggling subtask:", error)
-        // エラー時はロールバック
+
         setTasks(previousTasks)
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }
@@ -465,9 +432,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Error reordering tasks:", error)
-        // エラー時はロールバック
+
         setTasks(previousTasks)
-        // TODO: ユーザーにエラー通知を表示
       }
     }
   }

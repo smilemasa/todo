@@ -295,7 +295,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
           </Box>
         </Box>
 
-        {/* 説明 */}
+
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
             <EditOutlined sx={{ fontSize: 20, color: "text.secondary" }} />

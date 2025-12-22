@@ -21,7 +21,7 @@ export const TaskList = () => {
 
   const displayTasks = sortTasks(tasks, sortConfig)
 
-  // Configure touch sensor with delay for long press activation
+  // タッチセンサーの設定（長押しでドラッグ開始）
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 5,
@@ -63,6 +63,7 @@ export const TaskList = () => {
 
   const isCustomSort = sortConfig.key === "custom"
 
+  // タスクが空の場合の表示
   if (displayTasks.length === 0) {
     return (
       <Box
@@ -87,7 +88,7 @@ export const TaskList = () => {
     )
   }
 
-  // Enable drag and drop only for custom sort
+  // カスタムソート時のみドラッグ&ドロップを有効化
   if (isCustomSort) {
     return (
       <Box sx={{ px: 2, pt: 2, pb: "140px" }} role="list" aria-label="タスク一覧">
