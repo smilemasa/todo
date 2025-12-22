@@ -88,8 +88,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
-      fullWidth
       slotProps={{
         paper: {
           sx: {
@@ -139,11 +137,11 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
               <Check sx={{ fontSize: 18, color: "white" }} />
             </Box>
           }
-          sx={{ p: 0, mt: 0.5 }}
+          sx={{ mt: 0.5 }}
         />
         <Box sx={{ flexGrow: 1 }}>
           <TextField
-            fullWidth
+
             variant="standard"
             value={title}
             onChange={(e) => {
@@ -223,16 +221,10 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
             </Typography>
           </Box>
           <TextField
-            fullWidth
             type="date"
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             size="small"
-            slotProps={{
-              inputLabel: {
-                shrink: true,
-              },
-            }}
             sx={{
               pl: 4.5,
               "& .MuiOutlinedInput-root": {
@@ -311,7 +303,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
             </Typography>
           </Box>
           <TextField
-            fullWidth
             multiline
             rows={3}
             value={description}
@@ -329,7 +320,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
 
         {/* Save Button */}
         <Button
-          fullWidth
           variant="contained"
           onClick={handleSave}
           sx={{

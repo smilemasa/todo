@@ -73,7 +73,6 @@ export const SubTaskList = ({
                 <Check sx={{ fontSize: 14, color: "white" }} />
               </Box>
             }
-            sx={{ p: 0 }}
           />
           <Typography
             sx={{

@@ -86,7 +86,6 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             </Box>
           </Typography>
           <TextField
-            fullWidth
             placeholder="タスク名を入力"
             variant="outlined"
             value={title}
@@ -109,7 +108,6 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             説明（任意）
           </Typography>
           <TextField
-            fullWidth
             multiline
             rows={4}
             placeholder="詳細を入力"
@@ -127,7 +125,7 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
               優先度
             </Typography>
-            <FormControl fullWidth>
+            <FormControl>
               <Select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
@@ -147,7 +145,6 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
               期限
             </Typography>
             <TextField
-              fullWidth
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}

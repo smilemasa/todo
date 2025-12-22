@@ -168,7 +168,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: Ta
                 <Check sx={{ fontSize: ICON_SIZE.medium, color: "white" }} />
               </Box>
             }
-            sx={{ p: 0.5, mt: 0 }}
+            sx={{ p: 0.5 }}
           />
 
           <Box sx={{ flexGrow: 1 }}>

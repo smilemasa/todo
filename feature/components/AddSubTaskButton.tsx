@@ -8,7 +8,6 @@ type AddSubTaskButtonProps = {
 export const AddSubTaskButton = ({ onClick }: AddSubTaskButtonProps) => {
   return (
     <Button
-      fullWidth
       startIcon={<Add />}
       onClick={onClick}
       sx={{
