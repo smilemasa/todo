@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter"
-import { ClientProviders } from "../feature/components/ClientProviders"
+import { ClientProviders } from "../feature/context/ClientProviders"
 import { Layout } from "../feature/components/Layout"
 
 export const metadata: Metadata = {
