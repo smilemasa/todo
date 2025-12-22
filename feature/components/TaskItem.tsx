@@ -5,7 +5,6 @@ import {
   Typography,
   Box,
   Stack,
-  Chip,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -17,7 +16,6 @@ import {
 import {
   Check,
   MoreVert,
-  AccessTime,
   EditOutlined,
   ContentCopy,
   DeleteOutline,
@@ -143,9 +141,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
             checked={task.completed}
             onChange={handleToggle}
             onClick={handleCheckboxClick}
-            inputProps={{
-              "aria-label": `タスク「${task.title}」を${task.completed ? "未完了" : "完了"}にする`,
-            }}
             icon={
               <Box
                 sx={{
@@ -272,38 +267,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                   {progress}
                 </Box>
               )}
-
-              {task.tags &&
-                task.tags.map((tag, i) => (
-                  <Chip
-                    key={i}
-                    icon={
-                      tag.icon === "clock" ? (
-                        <AccessTime sx={{ fontSize: `${ICON_SIZE.small}px !important` }} />
-                      ) : undefined
-                    }
-                    label={tag.text}
-                    size="small"
-                    sx={{
-                      height: 24,
-                      fontWeight: 700,
-                      fontSize: "0.75rem",
-                      bgcolor:
-                        tag.variant === "warning"
-                          ? TAG_COLORS.warning.background
-                          : TAG_COLORS.default.background,
-                      color:
-                        tag.variant === "warning"
-                          ? TAG_COLORS.warning.text
-                          : TAG_COLORS.default.text,
-                      "& .MuiChip-icon": {
-                        color: "inherit",
-                        ml: 0.5,
-                        mr: -0.5,
-                      },
-                    }}
-                  />
-                ))}
             </Stack>
           </Box>
 
@@ -431,8 +394,6 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                     if (newSubtaskTitle.trim()) {
                       addSubtask(task.id, newSubtaskTitle)
                       setNewSubtaskTitle("")
-                      // Optional: keep focus to add more? User requested 'transform to text box', usually implies one-off or continuous.
-                      // Let's keep it simple: close after add.
                       setIsAddingSubtask(false)
                     }
                   } else if (e.key === "Escape") {

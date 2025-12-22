@@ -17,6 +17,7 @@
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
     "@mui/material-nextjs": "^7.3.6",
+    "framer-motion": "^12.23.26",
     "js-cookie": "^3.0.5",
     "next": "^16.1.0",
     "next-auth": "^4.24.13",

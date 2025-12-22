@@ -14,13 +14,9 @@ export type TaskType = {
   deadlineCurrent?: string
   date?: string
   dateCurrent?: string
-  tags?: Array<{
-    text: string
-    variant: "warning" | "default"
-    icon?: "clock"
-  }>
   completed: boolean
   subtasks?: SubTask[]
   priority?: Priority
   memo?: string
+  completedAt?: string
 }

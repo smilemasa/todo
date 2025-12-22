@@ -26,7 +26,7 @@ const INITIAL_TASKS: TaskType[] = [
     id: "1",
     title: "チームミーティングの準備",
     description: "資料を3部印刷する",
-    completed: true,
+    completed: false,
   },
   {
     id: "2",
@@ -47,10 +47,6 @@ const INITIAL_TASKS: TaskType[] = [
   {
     id: "4",
     title: "クライアントへの提案書作成",
-    tags: [
-      { text: "今日", variant: "warning", icon: "clock" },
-      { text: "高", variant: "warning" },
-    ],
     completed: false,
   },
   {
@@ -80,7 +76,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const loadTasks = async () => {
       if (status === "loading") return
-      
+
       // Google認証の場合はGCSからタスクを取得
       if (isAuthenticated) {
         try {
@@ -95,7 +91,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           // エラー時は空配列を設定（ユーザーにエラー通知を追加することを推奨）
           setTasks([])
         }
-      } 
+      }
       // Guestログインの場合はInitialタスクを表示
       else if (user?.isGuest) {
         setTasks(INITIAL_TASKS)
@@ -104,7 +100,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
       else {
         setTasks([])
       }
-      
+
       setIsLoading(false)
     }
 
@@ -117,7 +113,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
       id: Date.now().toString(),
       completed: false,
     }
-    
+
     // 楽観的更新: ローカル状態を先に更新
     setTasks((prev) => [newTask, ...prev])
 
@@ -131,7 +127,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ task: newTask }),
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to create task: ${response.status}`)
         }
@@ -148,18 +144,32 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // 楽観的更新: 現在の状態を保存してから更新
     const previousTasks = tasks
     const taskToUpdate = tasks.find((t) => t.id === id)
-    
+
     if (!taskToUpdate) return
-    
+
     // ローカル状態を更新
     setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+      prev.map((t) => {
+        if (t.id === id) {
+          const newCompleted = !t.completed
+          return {
+            ...t,
+            completed: newCompleted,
+            completedAt: newCompleted ? new Date().toISOString() : undefined,
+          }
+        }
+        return t
+      })
     )
-    
+
     // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
-        const updatedTask = { ...taskToUpdate, completed: !taskToUpdate.completed }
+        const updatedTask = {
+          ...taskToUpdate,
+          completed: !taskToUpdate.completed,
+          completedAt: !taskToUpdate.completed ? new Date().toISOString() : undefined,
+        }
         const response = await fetch(`/api/tasks/${id}`, {
           method: "PUT",
           headers: {
@@ -167,7 +177,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ task: updatedTask }),
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to update task: ${response.status}`)
         }
@@ -183,10 +193,10 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const updateTask = async (id: string, updatedTask: TaskType) => {
     // 楽観的更新: 現在の状態を保存
     const previousTasks = tasks
-    
+
     // ローカル状態を更新
     setTasks((prev) => prev.map((t) => (t.id === id ? updatedTask : t)))
-    
+
     // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
@@ -197,7 +207,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ task: updatedTask }),
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to update task: ${response.status}`)
         }
@@ -213,17 +223,17 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const deleteTask = async (id: string) => {
     // 楽観的更新: 現在の状態を保存
     const previousTasks = tasks
-    
+
     // ローカル状態から削除
     setTasks((prev) => prev.filter((t) => t.id !== id))
-    
+
     // Google認証時はAPIで削除
     if (isAuthenticated) {
       try {
         const response = await fetch(`/api/tasks/${id}`, {
           method: "DELETE",
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to delete task: ${response.status}`)
         }
@@ -270,7 +280,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ task: newTask }),
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to duplicate task: ${response.status}`)
         }
@@ -287,23 +297,23 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // 楽観的更新: 現在の状態を保存
     const previousTasks = tasks
     const taskToUpdate = tasks.find((t) => t.id === taskId)
-    
+
     if (!taskToUpdate) return
-    
+
     const newSubtask: SubTask = {
       id: Date.now().toString(),
       title,
       completed: false,
     }
-    
+
     const updatedTask = {
       ...taskToUpdate,
       subtasks: [...(taskToUpdate.subtasks || []), newSubtask],
     }
-    
+
     // ローカル状態を更新
     setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)))
-    
+
     // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
@@ -314,7 +324,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ task: updatedTask }),
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to add subtask: ${response.status}`)
         }
@@ -331,19 +341,25 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // 楽観的更新: 現在の状態を保存
     const previousTasks = tasks
     const taskToUpdate = tasks.find((t) => t.id === taskId)
-    
+
     if (!taskToUpdate) return
-    
+
+    const updatedSubtasks = taskToUpdate.subtasks?.map((st) =>
+      st.id === subtaskId ? { ...st, completed: !st.completed } : st
+    )
+
+    const allSubtasksCompleted = updatedSubtasks?.every((st) => st.completed)
+
     const updatedTask = {
       ...taskToUpdate,
-      subtasks: taskToUpdate.subtasks?.map((st) =>
-        st.id === subtaskId ? { ...st, completed: !st.completed } : st
-      ),
+      subtasks: updatedSubtasks,
+      // サブタスクがすべて完了したら親タスクも完了にする
+      ...(allSubtasksCompleted ? { completed: true } : {}),
     }
-    
+
     // ローカル状態を更新
     setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)))
-    
+
     // Google認証時はAPIに保存
     if (isAuthenticated) {
       try {
@@ -354,7 +370,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
           },
           body: JSON.stringify({ task: updatedTask }),
         })
-        
+
         if (!response.ok) {
           throw new Error(`Failed to toggle subtask: ${response.status}`)
         }
@@ -371,7 +387,18 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TaskContext.Provider
-      value={{ tasks, addTask, updateTask, toggleTask, deleteTask, duplicateTask, addSubtask, toggleSubtask, uncompletedCount, isLoading }}
+      value={{
+        tasks,
+        addTask,
+        updateTask,
+        toggleTask,
+        deleteTask,
+        duplicateTask,
+        addSubtask,
+        toggleSubtask,
+        uncompletedCount,
+        isLoading,
+      }}
     >
       {children}
     </TaskContext.Provider>

@@ -14,6 +14,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import LogoutIcon from "@mui/icons-material/Logout"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+
 import { useAuth } from "../context/AuthContext"
 
 export const SettingsPage = () => {
@@ -41,6 +42,8 @@ export const SettingsPage = () => {
 
   return (
     <Box sx={{ p: "24px" }}>
+      {/* General Settings */}
+
       {/* Section Label */}
       <Typography
         variant="body2"
