@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 import type { TaskType, SubTask } from "../types"
 import { useSession } from "next-auth/react"
 import { useAuth } from "./AuthContext"
+import { useSettings } from "./SettingsContext"
 import { v4 as uuidv4 } from "uuid"
 
 type TaskContextType = {
@@ -95,6 +96,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "custom", direction: "asc" })
   const { data: session, status } = useSession()
   const { user } = useAuth()
+  const { autoCompleteParentTask } = useSettings()
 
   // 認証されているかどうかをチェック
   const isAuthenticated = status === "authenticated" && session?.user?.email && !user?.isGuest
@@ -405,8 +407,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     const updatedTask = {
       ...taskToUpdate,
       subtasks: updatedSubtasks,
-      // サブタスクがすべて完了したら親タスクも完了にする
-      ...(allSubtasksCompleted ? { completed: true } : {}),
+      // 設定が有効な場合、サブタスクがすべて完了したら親タスクも完了にする
+      ...(autoCompleteParentTask && allSubtasksCompleted ? { completed: true } : {}),
     }
 
     // ローカル状態を更新

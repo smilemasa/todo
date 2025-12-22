@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react"
 import { theme } from "../theme"
 import { TaskProvider } from "./TaskContext"
 import { AuthProvider } from "./AuthContext"
+import { SettingsProvider } from "./SettingsContext"
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,9 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider>
-          <TaskProvider>{children}</TaskProvider>
+          <SettingsProvider>
+            <TaskProvider>{children}</TaskProvider>
+          </SettingsProvider>
         </AuthProvider>
       </ThemeProvider>
     </SessionProvider>
