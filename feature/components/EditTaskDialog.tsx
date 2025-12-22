@@ -100,7 +100,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
       <DialogTitle
         sx={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
           gap: 2,
           pb: 2,
           pt: 3,
@@ -137,7 +137,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
               <Check sx={{ fontSize: 18, color: "white" }} />
             </Box>
           }
-          sx={{ mt: 0.5 }}
         />
         <Box sx={{ flexGrow: 1 }}>
           <TextField
@@ -173,7 +172,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
             </Typography>
           )}
         </Box>
-        <IconButton onClick={onClose} size="small" sx={{ color: "text.secondary", mt: -0.5 }}>
+        <IconButton onClick={onClose} size="small" sx={{ color: "text.secondary" }}>
           <Close />
         </IconButton>
       </DialogTitle>
@@ -321,20 +320,23 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
         </Box>
 
         {/* Save Button */}
-        <Button
-          variant="contained"
-          onClick={handleSave}
-          sx={{
-            mt: 3,
-            py: 1.5,
-            borderRadius: 2,
-            textTransform: "none",
-            fontWeight: 600,
-            fontSize: "1rem",
-          }}
-        >
-          保存
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            sx={{
+              mt: 3,
+              py: 1.5,
+              px: 4,
+              borderRadius: 2,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "1rem",
+            }}
+          >
+            保存
+          </Button>
+        </Box>
       </DialogContent>
     </Dialog>
   )
