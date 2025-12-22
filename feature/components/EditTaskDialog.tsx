@@ -213,18 +213,20 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
 
         <Divider sx={{ my: 3 }} />
 
-        {/* 期限 */}
+        {/* 説明 */}
         <Box sx={{ mb: 3 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
-            <CalendarToday sx={{ fontSize: 20, color: "text.secondary" }} />
+            <EditOutlined sx={{ fontSize: 20, color: "text.secondary" }} />
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              期限
+              説明
             </Typography>
           </Box>
           <TextField
-            type="date"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
+            multiline
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="説明を入力"
             size="small"
             sx={{
               pl: 4.5,
@@ -295,20 +297,18 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
           </Box>
         </Box>
 
-
+        {/* 期限 */}
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
-            <EditOutlined sx={{ fontSize: 20, color: "text.secondary" }} />
+            <CalendarToday sx={{ fontSize: 20, color: "text.secondary" }} />
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              説明
+              期限
             </Typography>
           </Box>
           <TextField
-            multiline
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="説明を入力"
+            type="date"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
             size="small"
             sx={{
               pl: 4.5,
