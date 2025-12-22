@@ -26,7 +26,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // タスクの削除
-export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions)
 
