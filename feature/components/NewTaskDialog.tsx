@@ -98,8 +98,10 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             }}
             error={titleError}
             helperText={titleError ? "タスク名は必須です" : ""}
-            InputProps={{
-              sx: { borderRadius: 2, bgcolor: "#fff" },
+            slotProps={{
+              input: {
+                sx: { borderRadius: 2, bgcolor: "#fff" },
+              },
             }}
           />
         </Box>
@@ -116,8 +118,10 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             variant="outlined"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            InputProps={{
-              sx: { borderRadius: 2, bgcolor: "#fff" },
+            slotProps={{
+              input: {
+                sx: { borderRadius: 2, bgcolor: "#fff" },
+              },
             }}
           />
         </Box>
@@ -151,13 +155,15 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              InputProps={{
-                sx: { borderRadius: 2, bgcolor: "#fff" },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <DateRange sx={{ color: "text.secondary" }} />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  sx: { borderRadius: 2, bgcolor: "#fff" },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <DateRange sx={{ color: "text.secondary" }} />
+                    </InputAdornment>
+                  ),
+                },
               }}
               // This is a bit of a hack to show placeholder logic if needed,
               // but MUI date input usually handles itself.

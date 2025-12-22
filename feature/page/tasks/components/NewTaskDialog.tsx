@@ -98,8 +98,10 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             }}
             error={titleError}
             helperText={titleError ? "タスク名は必須です" : ""}
-            InputProps={{
-              sx: { borderRadius: 2, bgcolor: "#fff" },
+            slotProps={{
+              input: {
+                sx: { borderRadius: 2, bgcolor: "#fff" },
+              },
             }}
           />
         </Box>
@@ -116,8 +118,10 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
             variant="outlined"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            InputProps={{
-              sx: { borderRadius: 2, bgcolor: "#fff" },
+            slotProps={{
+              input: {
+                sx: { borderRadius: 2, bgcolor: "#fff" },
+              },
             }}
           />
         </Box>
@@ -151,20 +155,16 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              InputProps={{
-                sx: { borderRadius: 2, bgcolor: "#fff" },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <DateRange sx={{ color: "text.secondary" }} />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  sx: { borderRadius: 2, bgcolor: "#fff" },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <DateRange sx={{ color: "text.secondary" }} />
+                    </InputAdornment>
+                  ),
+                },
               }}
-              // This is a bit of a hack to show placeholder logic if needed,
-              // but MUI date input usually handles itself.
-              // The browser's native date picker will be used.
-              // We'll hide the default calendar indicator to use our icon if possible,
-              // but for standard HTML date input, customizing the icon is tricky reliably cross-browser without a library like MUI DatePicker.
-              // For this task, we will stick to standard TextField with type="date".
               sx={{
                 "& input::-webkit-calendar-picker-indicator": {
                   opacity: 0,
@@ -178,17 +178,7 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
                 position: "relative",
               }}
             />
-            {/* Note: The above CSS hack for date picker indicator might be flaky. 
-                 If the user strictly wants the icon as shown, we might need a specific DatePicker component 
-                 or just rely on the native one. 
-                 I'll use a simple placeholder approach for the "No date selected" state if I can.
-                 actually, standard type='date' is fine for MVP. 
-                 The provided image shows a placeholder "日付を選択" and a calendar icon.
-                 Achieving exactly that with standard <input type="date"> is hard because it usually shows "mm/dd/yyyy" or similar.
-                 Let's try to mimic it using the standard one but maybe let the placeholder be visible if empty?
-                 Actually, type="text" switching to "date" on focus is a common trick, but can be jarring.
-                 I'll stick to a simple text field that works as date picker or just type='date'.
-              */}
+            {/* 日付は標準の type="date" を使用。表示やアイコンの完全制御はブラウザ依存。*/}
           </Box>
         </Box>
       </DialogContent>

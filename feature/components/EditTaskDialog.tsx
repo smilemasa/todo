@@ -152,11 +152,13 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
             }}
             placeholder="タスク名 *"
             error={titleError}
-            InputProps={{
-              disableUnderline: true,
-              sx: {
-                fontSize: "1.25rem",
-                fontWeight: 700,
+            slotProps={{
+              input: {
+                disableUnderline: true,
+                sx: {
+                  fontSize: "1.25rem",
+                  fontWeight: 700,
+                },
               },
             }}
           />
