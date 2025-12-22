@@ -1,5 +1,5 @@
-import { TasksPage } from "../feature/page/TasksPage"
+import { redirect } from "next/navigation"
 
 export default function Page() {
-  return <TasksPage />
+  redirect("/login")
 }

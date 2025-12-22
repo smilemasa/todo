@@ -1,9 +1,10 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 import type { ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { useSession, signIn, signOut } from "next-auth/react"
+import Cookies from "js-cookie"
 
 type User = {
   id: string
@@ -28,22 +29,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const { data: session, status } = useSession()
 
+  useEffect(() => {
+    const guestToken = Cookies.get("guest-token")
+    if (guestToken && !guestUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setGuestUser({
+        id: guestToken,
+        name: "Guest User",
+        isGuest: true,
+      })
+    }
+  }, [guestUser])
+
   const loginGoogle = async () => {
-    await signIn("google", { callbackUrl: "/" })
+    await signIn("google", { callbackUrl: "/tasks" })
   }
 
   const loginGuest = () => {
+    const guestId = "GUEST"
     const newGuestUser: User = {
-      id: "guest-" + Date.now(),
+      id: guestId,
       name: "Guest User",
       isGuest: true,
     }
+    Cookies.set("guest-token", guestId, { expires: 7 }) // Expire in 7 days
     setGuestUser(newGuestUser)
-    router.push("/")
+    router.push("/tasks")
   }
 
   const logout = async () => {
     if (guestUser) {
+      Cookies.remove("guest-token")
       setGuestUser(null)
       router.push("/login")
     } else {
@@ -53,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const user: User | null = session?.user
     ? {
-        id: (session.user as any).id || session.user.email || "",
+        id: session.user.id || session.user.email || "",
         name: session.user.name || "User",
         email: session.user.email || undefined,
         image: session.user.image || undefined,

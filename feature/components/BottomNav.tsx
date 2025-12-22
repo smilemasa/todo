@@ -9,6 +9,7 @@ export const BottomNav = () => {
   const pathname = usePathname()
 
   const getValue = () => {
+    if (pathname === "/tasks") return 0
     if (pathname === "/schedule") return 1
     if (pathname === "/archive") return 2
     if (pathname === "/settings") return 3
@@ -25,7 +26,7 @@ export const BottomNav = () => {
         onChange={(_, newValue) => {
           switch (newValue) {
             case 0:
-              router.push("/")
+              router.push("/tasks")
               break
             case 1:
               router.push("/schedule")

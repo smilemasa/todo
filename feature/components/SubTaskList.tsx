@@ -6,10 +6,6 @@ const TAG_COLORS = {
   subtaskBg: "#6366f1", // indigo-500
 } as const
 
-const ICON_SIZE = {
-  large: 22,
-} as const
-
 type SubTaskListProps = {
   subtasks: SubTask[]
   onToggle: (subtaskId: string) => void

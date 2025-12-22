@@ -288,8 +288,14 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
                       height: 24,
                       fontWeight: 700,
                       fontSize: "0.75rem",
-                      bgcolor: tag.variant === "warning" ? TAG_COLORS.warning.background : TAG_COLORS.default.background,
-                      color: tag.variant === "warning" ? TAG_COLORS.warning.text : TAG_COLORS.default.text,
+                      bgcolor:
+                        tag.variant === "warning"
+                          ? TAG_COLORS.warning.background
+                          : TAG_COLORS.default.background,
+                      color:
+                        tag.variant === "warning"
+                          ? TAG_COLORS.warning.text
+                          : TAG_COLORS.default.text,
                       "& .MuiChip-icon": {
                         color: "inherit",
                         ml: 0.5,
@@ -468,12 +474,14 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask }: TaskItemProps) => {
       </Collapse>
 
       {/* 編集ダイアログ */}
-      <EditTaskDialog
-        open={isEditDialogOpen}
-        onClose={() => setIsEditDialogOpen(false)}
-        task={task}
-        onSave={(updatedTask) => updateTask(task.id, updatedTask)}
-      />
+      {isEditDialogOpen && (
+        <EditTaskDialog
+          open={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          task={task}
+          onSave={(updatedTask) => updateTask(task.id, updatedTask)}
+        />
+      )}
     </Card>
   )
 }

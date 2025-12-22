@@ -9,21 +9,12 @@ import {
   Checkbox,
   Stack,
   Button,
-  Chip,
   ToggleButton,
   ToggleButtonGroup,
   Divider,
 } from "@mui/material"
-import {
-  Close,
-  Check,
-  Add,
-  CalendarToday,
-  Flag,
-  EditOutlined,
-  DragIndicator,
-} from "@mui/icons-material"
-import { useState, useEffect } from "react"
+import { Close, Check, CalendarToday, Flag, EditOutlined } from "@mui/icons-material"
+import { useState } from "react"
 import type { TaskType, SubTask, Priority } from "../types"
 import { SubTaskList } from "./SubTaskList"
 import { AddSubTaskButton } from "./AddSubTaskButton"
@@ -68,16 +59,8 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
   const [titleError, setTitleError] = useState(false)
 
   // Reset form when task changes
-  useEffect(() => {
-    setTitle(task.title)
-    setCompleted(task.completed)
-    setDeadline(task.deadline || "")
-    setPriority(task.priority || "medium")
-    setMemo(task.memo || "")
-    setSubtasks(task.subtasks || [])
-    setNewSubtaskTitle("")
-    setTitleError(false)
-  }, [task])
+  // useEffect removed to fix "setState in effect" lint error.
+  // The parent component (TaskItem) will handle resetting state by unmounting/remounting this dialog.
 
   const handleToggleSubtask = (subtaskId: string) => {
     setSubtasks((prev) =>
@@ -233,7 +216,9 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
       <DialogContent sx={{ px: 3, pb: 3 }}>
         {/* サブタスク */}
         <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}
+          >
             <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: 700 }}>
               サブタスク
             </Typography>

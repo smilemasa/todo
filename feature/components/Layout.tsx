@@ -1,11 +1,9 @@
 "use client"
 
-import { Box, Container, Paper, CircularProgress } from "@mui/material"
+import { Box, Container, Paper } from "@mui/material"
 import { BottomNav } from "./BottomNav"
 import { Header } from "./Header"
-import { usePathname, useRouter } from "next/navigation"
-import { useAuth } from "../context/AuthContext"
-import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 
 type LayoutProps = {
   children: React.ReactNode
@@ -13,42 +11,7 @@ type LayoutProps = {
 
 export const Layout = ({ children }: LayoutProps) => {
   const pathname = usePathname()
-  const router = useRouter()
-  const { user, isLoading } = useAuth()
-  const [mounted, setMounted] = useState(false)
   const isLoginPage = pathname === "/login"
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!isLoading && !user && !isLoginPage) {
-      router.push("/login")
-    }
-  }, [user, isLoading, isLoginPage, router])
-
-  // Prevent hydration mismatch by showing loading state until mounted
-  if (!mounted || isLoading) {
-    return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "background.default",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    )
-  }
-
-  // Don't render layout content while redirecting
-  if (!user && !isLoginPage) {
-    return null
-  }
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
