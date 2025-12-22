@@ -2,7 +2,7 @@
 
 import { Box, Container, Paper } from "@mui/material"
 import { BottomNav } from "./BottomNav"
-import { Header } from "./Header"
+
 import { usePathname } from "next/navigation"
 
 type LayoutProps = {
@@ -27,7 +27,6 @@ export const Layout = ({ children }: LayoutProps) => {
             flexDirection: "column",
           }}
         >
-          {!isLoginPage && <Header />}
           <Box component="main" sx={{ flexGrow: 1, position: "relative", zIndex: 0 }}>
             {children}
           </Box>

@@ -1,17 +1,13 @@
 "use client"
 
 import { AppBar, Toolbar, Typography, Box } from "@mui/material"
-import { usePathname } from "next/navigation"
-import { useTaskContext } from "../context/TaskContext"
 
-export const Header = () => {
-  const { uncompletedCount } = useTaskContext()
-  const pathname = usePathname()
+export type HeaderProps = {
+  title: string
+  children?: React.ReactNode
+}
 
-  const isSettings = pathname === "/settings"
-  const isArchive = pathname === "/archive"
-  const title = isArchive ? "アーカイブ" : isSettings ? "設定" : "TODOリスト"
-
+export const Header = ({ title, children }: HeaderProps) => {
   return (
     <AppBar
       position="sticky"
@@ -30,22 +26,7 @@ export const Header = () => {
         >
           {title}
         </Typography>
-        {!isSettings && !isArchive && (
-          <Box
-            component="span"
-            sx={{
-              bgcolor: "#eff6ff", // blue-50
-              color: "#2563eb", // blue-600
-              fontWeight: 600,
-              fontSize: "0.875rem",
-              borderRadius: "9999px",
-              px: 1.5,
-              py: 0.5,
-            }}
-          >
-            {uncompletedCount}件
-          </Box>
-        )}
+        {children && <Box sx={{ display: "flex", alignItems: "center" }}>{children}</Box>}
       </Toolbar>
     </AppBar>
   )

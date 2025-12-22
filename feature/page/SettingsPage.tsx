@@ -10,6 +10,7 @@ import {
   ListItemText,
   Paper,
 } from "@mui/material"
+import { Header } from "../components/Header"
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import LogoutIcon from "@mui/icons-material/Logout"
@@ -41,55 +42,58 @@ export const SettingsPage = () => {
   ]
 
   return (
-    <Box sx={{ p: "24px" }}>
-      {/* General Settings */}
+    <>
+      <Header title="設定" />
+      <Box sx={{ p: "24px" }}>
+        {/* General Settings */}
 
-      {/* Section Label */}
-      <Typography
-        variant="body2"
-        sx={{
-          mb: 1,
-          color: "text.secondary",
-          fontSize: "14px",
-        }}
-      >
-        その他
-      </Typography>
+        {/* Section Label */}
+        <Typography
+          variant="body2"
+          sx={{
+            mb: 1,
+            color: "text.secondary",
+            fontSize: "14px",
+          }}
+        >
+          その他
+        </Typography>
 
-      {/* Menu List */}
-      <Paper
-        elevation={0}
-        sx={{
-          borderRadius: "16px",
-          overflow: "hidden",
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <List disablePadding>
-          {menuItems.map((item, index) => (
-            <ListItem key={item.text} disablePadding divider={index !== menuItems.length - 1}>
-              <ListItemButton sx={{ py: 2 }} onClick={item.onClick}>
-                <ListItemIcon sx={{ minWidth: 40, color: "text.primary" }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  slotProps={{
-                    primary: {
-                      sx: {
-                        fontWeight: 500,
-                        color: item.color === "inherit" ? "text.primary" : item.color,
+        {/* Menu List */}
+        <Paper
+          elevation={0}
+          sx={{
+            borderRadius: "16px",
+            overflow: "hidden",
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <List disablePadding>
+            {menuItems.map((item, index) => (
+              <ListItem key={item.text} disablePadding divider={index !== menuItems.length - 1}>
+                <ListItemButton sx={{ py: 2 }} onClick={item.onClick}>
+                  <ListItemIcon sx={{ minWidth: 40, color: "text.primary" }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    slotProps={{
+                      primary: {
+                        sx: {
+                          fontWeight: 500,
+                          color: item.color === "inherit" ? "text.primary" : item.color,
+                        },
                       },
-                    },
-                  }}
-                />
-                <ChevronRightIcon sx={{ color: "#9ca3af" }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-    </Box>
+                    }}
+                  />
+                  <ChevronRightIcon sx={{ color: "#9ca3af" }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      </Box>
+    </>
   )
 }
