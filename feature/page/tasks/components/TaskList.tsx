@@ -30,7 +30,7 @@ export const TaskList = () => {
 
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 250,
+      delay: 0,
       tolerance: 5,
     },
   })
@@ -51,13 +51,13 @@ export const TaskList = () => {
 
     // 完了済みタスクと未完了タスクを分離
     const completedTasks = tasks.filter((task) => task.completed)
-    
+
     // 降順の場合は、表示順序と実際のorder値が逆になるため、配列を反転
     const orderedTasks = sortConfig.direction === "desc" ? [...newTasks].reverse() : newTasks
-    
+
     // 新しい順序で未完了タスクを配置し、その後に完了済みタスクを追加
     const reorderedTasks = [...orderedTasks, ...completedTasks]
-    
+
     reorderTasks(reorderedTasks)
   }
 
@@ -93,7 +93,10 @@ export const TaskList = () => {
     return (
       <Box sx={{ px: 2, pt: 2, pb: "140px" }} role="list" aria-label="タスク一覧">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={displayTasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext
+            items={displayTasks.map((t) => t.id)}
+            strategy={verticalListSortingStrategy}
+          >
             <AnimatePresence mode="popLayout" initial={false}>
               {displayTasks.map((task) => (
                 <motion.div

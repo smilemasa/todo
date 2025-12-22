@@ -1,17 +1,5 @@
-import {
-  Card,
-  Checkbox,
-  IconButton,
-  Typography,
-  Box,
-  Stack,
-  Collapse,
-} from "@mui/material"
-import {
-  Check,
-  ExpandMore,
-  ExpandLess,
-} from "@mui/icons-material"
+import { Card, Checkbox, IconButton, Typography, Box, Stack, Collapse } from "@mui/material"
+import { Check, ExpandMore, ExpandLess } from "@mui/icons-material"
 import { useState } from "react"
 import type { TaskType } from "../types"
 import type { DraggableAttributes } from "@dnd-kit/core"
@@ -120,151 +108,152 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: Ta
         }}
       >
         <Checkbox
-            checked={task.completed}
-            onChange={handleToggle}
-            onClick={handleCheckboxClick}
-            icon={
-              <Box
-                sx={{
-                  width: CHECKBOX_SIZE.width,
-                  height: CHECKBOX_SIZE.height,
-                  borderRadius: 2,
-                  border: "2px solid",
-                  borderColor: "grey.300",
-                  bgcolor: "background.paper",
-                }}
-              />
-            }
-            checkedIcon={
-              <Box
-                sx={{
-                  width: CHECKBOX_SIZE.width,
-                  height: CHECKBOX_SIZE.height,
-                  borderRadius: 2,
-                  bgcolor: "primary.main",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Check sx={{ fontSize: ICON_SIZE.medium, color: "white" }} />
-              </Box>
-            }
-            sx={{ p: 0.5 }}
-          />
-
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography
-              variant="h6"
+          checked={task.completed}
+          onChange={handleToggle}
+          onClick={handleCheckboxClick}
+          icon={
+            <Box
               sx={{
-                fontSize: "1rem",
-                fontWeight: 700,
-                lineHeight: 1.4,
-                mb: 0.5,
-                textDecoration: task.completed ? "line-through" : "none",
-                color: task.completed ? "text.secondary" : "text.primary",
+                width: CHECKBOX_SIZE.width,
+                height: CHECKBOX_SIZE.height,
+                borderRadius: 2,
+                border: "2px solid",
+                borderColor: "grey.300",
+                bgcolor: "background.paper",
+              }}
+            />
+          }
+          checkedIcon={
+            <Box
+              sx={{
+                width: CHECKBOX_SIZE.width,
+                height: CHECKBOX_SIZE.height,
+                borderRadius: 2,
+                bgcolor: "primary.main",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {task.title}
-            </Typography>
+              <Check sx={{ fontSize: ICON_SIZE.medium, color: "white" }} />
+            </Box>
+          }
+          sx={{ p: 0.5 }}
+        />
 
-            {task.description && (
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                {task.description}
-              </Typography>
-            )}
-
-            <Stack direction="row" flexWrap="wrap" gap={1} alignItems="center">
-              {task.priority && (
-                <Box
-                  component="span"
-                  sx={{
-                    bgcolor: PRIORITY_COLORS[task.priority].background,
-                    color: PRIORITY_COLORS[task.priority].text,
-                    px: 1,
-                    py: 0.25,
-                    borderRadius: 99,
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                  }}
-                >
-                  {PRIORITY_LABELS[task.priority]}
-                </Box>
-              )}
-              {task.deadline && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    color: "text.secondary",
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  <span>{task.deadline}</span>
-                </Box>
-              )}
-
-              {progress && (
-                <Box
-                  component="span"
-                  sx={{
-                    bgcolor: TAG_COLORS.progress.background,
-                    color: TAG_COLORS.progress.text,
-                    px: 1.5,
-                    py: 0.25,
-                    borderRadius: 99,
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                  }}
-                >
-                  {progress}
-                </Box>
-              )}
-            </Stack>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 0.5 }}>
-            <IconButton
-              size="small"
-              sx={{ color: "text.secondary" }}
-              onClick={handleExpandToggle}
-              aria-label={expanded ? "詳細を閉じる" : "詳細を開く"}
-              aria-expanded={expanded}
-            >
-              {expanded ? <ExpandLess /> : <ExpandMore />}
-            </IconButton>
-            <TaskItemMenu
-              onEdit={() => setIsEditDialogOpen(true)}
-              onDuplicate={() => duplicateTask(task.id)}
-              onDelete={() => deleteTask(task.id)}
-            />
-          </Box>
-
-          {dragHandleProps && (
-          <Box
-            {...dragHandleProps.attributes}
-            {...dragHandleProps.listeners}
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "grab",
-              "&:active": {
-                cursor: "grabbing",
-              },
-              touchAction: "none",
-              mt: 0.5,
+              fontSize: "1rem",
+              fontWeight: 700,
+              lineHeight: 1.4,
+              mb: 0.5,
+              textDecoration: task.completed ? "line-through" : "none",
+              color: task.completed ? "text.secondary" : "text.primary",
             }}
           >
-            <Box component="svg" sx={{ width: 20, height: 20 }} viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M9 3h2v2H9V3zm4 0h2v2h-2V3zM9 7h2v2H9V7zm4 0h2v2h-2V7zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"
-              />
+            {task.title}
+          </Typography>
+
+          {task.description && (
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              {task.description}
+            </Typography>
+          )}
+
+          <Stack direction="row" flexWrap="wrap" gap={1} alignItems="center">
+            {task.priority && (
+              <Box
+                component="span"
+                sx={{
+                  bgcolor: PRIORITY_COLORS[task.priority].background,
+                  color: PRIORITY_COLORS[task.priority].text,
+                  px: 1,
+                  py: 0.25,
+                  borderRadius: 99,
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                }}
+              >
+                {PRIORITY_LABELS[task.priority]}
+              </Box>
+            )}
+            {task.deadline && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  color: "text.secondary",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <span>{task.deadline}</span>
+              </Box>
+            )}
+
+            {progress && (
+              <Box
+                component="span"
+                sx={{
+                  bgcolor: TAG_COLORS.progress.background,
+                  color: TAG_COLORS.progress.text,
+                  px: 1.5,
+                  py: 0.25,
+                  borderRadius: 99,
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                }}
+              >
+                {progress}
+              </Box>
+            )}
+          </Stack>
+        </Box>
+
+        <Box sx={{ display: "flex", gap: 0.5 }}>
+          <IconButton
+            size="small"
+            sx={{ color: "text.secondary" }}
+            onClick={handleExpandToggle}
+            aria-label={expanded ? "詳細を閉じる" : "詳細を開く"}
+            aria-expanded={expanded}
+          >
+            {expanded ? <ExpandLess /> : <ExpandMore />}
+          </IconButton>
+          <TaskItemMenu
+            onEdit={() => setIsEditDialogOpen(true)}
+            onDuplicate={() => duplicateTask(task.id)}
+            onDelete={() => deleteTask(task.id)}
+          />
+          {dragHandleProps && (
+            <Box
+              {...dragHandleProps.attributes}
+              {...dragHandleProps.listeners}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "grab",
+                "&:active": {
+                  cursor: "grabbing",
+                },
+                touchAction: "none",
+                p: 1,
+                mr: -1,
+              }}
+            >
+              <Box component="svg" sx={{ width: 20, height: 20 }} viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M9 3h2v2H9V3zm4 0h2v2h-2V3zM9 7h2v2H9V7zm4 0h2v2h-2V7zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2zm-4 4h2v2H9v-2zm4 0h2v2h-2v-2z"
+                />
+              </Box>
             </Box>
-          </Box>
-        )}
-        </Stack>
+          )}
+        </Box>
+      </Stack>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <Box sx={{ px: 2, pb: 2, pt: 1.5, borderTop: "1px solid", borderColor: "divider" }}>
