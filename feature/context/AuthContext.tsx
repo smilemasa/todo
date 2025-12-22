@@ -58,12 +58,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const logout = async () => {
-    if (guestUser) {
-      Cookies.remove("guest-token")
-      setGuestUser(null)
-      router.push("/login")
-    } else {
+    // ゲストトークンと状態は常にクリアする
+    Cookies.remove("guest-token")
+    setGuestUser(null)
+
+    // セッションが存在する場合（Googleログイン中など）はsignOutを実行
+    if (status === "authenticated" || session) {
       await signOut({ callbackUrl: "/login" })
+    } else {
+      // ゲストのみの場合は手動でリダイレクト
+      router.push("/login")
     }
   }
 
