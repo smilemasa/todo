@@ -5,18 +5,10 @@ import {
   Typography,
   Box,
   Stack,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
   Collapse,
 } from "@mui/material"
 import {
   Check,
-  MoreVert,
-  EditOutlined,
-  ContentCopy,
-  DeleteOutline,
   ExpandMore,
   ExpandLess,
 } from "@mui/icons-material"
@@ -28,6 +20,7 @@ import { useTaskContext } from "../context/TaskContext"
 import { EditTaskDialog } from "./EditTaskDialog"
 import { SubTaskList } from "./SubTaskList"
 import { AddSubTask } from "./AddSubTask"
+import { TaskItemMenu } from "./TaskItemMenu"
 
 // デザインシステムの定数
 const CARD_SPACING = {
@@ -81,24 +74,13 @@ type TaskItemProps = {
 
 export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: TaskItemProps) => {
   const { addSubtask, toggleSubtask, deleteTask, duplicateTask, updateTask } = useTaskContext()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [expanded, setExpanded] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const open = Boolean(anchorEl)
 
   const subtasks = task.subtasks || []
   const completedSubtasks = subtasks.filter((st) => st.completed).length
   const totalSubtasks = subtasks.length
   const progress = totalSubtasks > 0 ? `${completedSubtasks}/${totalSubtasks}` : null
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
 
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
@@ -252,96 +234,14 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: Ta
             >
               {expanded ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
-            <IconButton
-              size="small"
-              sx={{ color: "text.secondary" }}
-              onClick={handleMenuOpen}
-              aria-label="メニューを開く"
-              aria-controls={open ? "task-menu" : undefined}
-              aria-haspopup="true"
-            >
-              <MoreVert />
-            </IconButton>
+            <TaskItemMenu
+              onEdit={() => setIsEditDialogOpen(true)}
+              onDuplicate={() => duplicateTask(task.id)}
+              onDelete={() => deleteTask(task.id)}
+            />
           </Box>
 
-          <Menu
-            id="task-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            onClick={(e) => e.stopPropagation()}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            slotProps={{
-              paper: {
-                elevation: 3,
-                sx: {
-                  borderRadius: 3,
-                  minWidth: 180,
-                  mt: 1,
-                  padding: 0,
-                  "& .MuiList-root": {
-                    padding: 0,
-                  },
-                },
-              },
-            }}
-          >
-            <MenuItem
-              onClick={() => {
-                handleMenuClose()
-                setIsEditDialogOpen(true)
-              }}
-              sx={{ py: 1.5 }}
-            >
-              <ListItemIcon sx={{ minWidth: 24, mr: 1.5 }}>
-                <EditOutlined fontSize="small" sx={{ color: "text.secondary" }} />
-              </ListItemIcon>
-              <ListItemText
-                primary="編集"
-                slotProps={{ primary: { variant: "body2", fontWeight: 500 } }}
-              />
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleMenuClose()
-                duplicateTask(task.id)
-              }}
-              sx={{ py: 1.5 }}
-            >
-              <ListItemIcon sx={{ minWidth: 24, mr: 1.5 }}>
-                <ContentCopy fontSize="small" sx={{ color: "text.secondary" }} />
-              </ListItemIcon>
-              <ListItemText
-                primary="複製"
-                slotProps={{ primary: { variant: "body2", fontWeight: 500 } }}
-              />
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleMenuClose()
-                deleteTask(task.id)
-              }}
-              sx={{ py: 1.5 }}
-            >
-              <ListItemIcon sx={{ minWidth: 24, mr: 1.5 }}>
-                <DeleteOutline fontSize="small" color="error" />
-              </ListItemIcon>
-              <ListItemText
-                primary="削除"
-                slotProps={{
-                  primary: { variant: "body2", fontWeight: 500, color: "error.main" },
-                }}
-              />
-            </MenuItem>
-          </Menu>
-                  {dragHandleProps && (
+          {dragHandleProps && (
           <Box
             {...dragHandleProps.attributes}
             {...dragHandleProps.listeners}
