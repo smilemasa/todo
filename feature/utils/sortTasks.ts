@@ -19,16 +19,15 @@ export const sortTasks = (tasks: TaskType[], sortConfig: SortConfig): TaskType[]
     }
 
     if (sortConfig.key === "date") {
-      // Use id as a proxy for creation date since id is timestamp based
-      return (Number(a.id) - Number(b.id)) * direction
+      return (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) * direction
+    }
+
+    if (sortConfig.key === "custom") {
+      return (a.order - b.order) * direction
     }
 
     return 0
   })
 
-  return sortConfig.key === "custom"
-    ? sortConfig.direction === "asc"
-      ? [...activeTasks].reverse()
-      : activeTasks
-    : sortedTasks
+  return sortedTasks
 }

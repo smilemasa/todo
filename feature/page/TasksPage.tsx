@@ -8,7 +8,7 @@ import { useTaskContext } from "../context/TaskContext"
 import { Header } from "../components/Header"
 import { SortMenu } from "../components/SortMenu"
 import { Box } from "@mui/material"
-import { sortTasks } from "../utils/taskUtils"
+import { sortTasks } from "../utils/sortTasks"
 
 export const TasksPage = () => {
   const { tasks, toggleTask, addTask, sortConfig } = useTaskContext()

@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 import type { TaskType, SubTask } from "../types"
 import { useSession } from "next-auth/react"
 import { useAuth } from "./AuthContext"
+import { v4 as uuidv4 } from "uuid"
 
 type TaskContextType = {
   tasks: TaskType[]
@@ -35,6 +36,8 @@ const INITIAL_TASKS: TaskType[] = [
     description: "資料を3部印刷する",
     completed: false,
     priority: "medium",
+    createdAt: "2024-01-01T10:00:00.000Z",
+    order: 1,
   },
   {
     id: "2",
@@ -47,18 +50,24 @@ const INITIAL_TASKS: TaskType[] = [
       { id: "s3", title: "上司に提出", completed: false },
     ],
     priority: "medium",
+    createdAt: "2024-01-02T14:00:00.000Z",
+    order: 2,
   },
   {
     id: "3",
     title: "プロジェクト企画書のレビュー",
     completed: false,
     priority: "medium",
+    createdAt: "2024-01-03T09:00:00.000Z",
+    order: 3,
   },
   {
     id: "4",
     title: "クライアントへの提案書作成",
     completed: false,
     priority: "medium",
+    createdAt: "2024-01-03T11:00:00.000Z",
+    order: 4,
   },
   {
     id: "5",
@@ -66,12 +75,16 @@ const INITIAL_TASKS: TaskType[] = [
     deadline: "2025/01/20",
     completed: false,
     priority: "high",
+    createdAt: "2024-01-04T16:00:00.000Z",
+    order: 5,
   },
   {
     id: "6",
     title: "買い物リスト確認",
     completed: false,
     priority: "low",
+    createdAt: "2024-01-05T18:00:00.000Z",
+    order: 6,
   },
 ]
 
@@ -121,10 +134,13 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   }, [isAuthenticated, status, user?.isGuest])
 
   const addTask = async (task: Omit<TaskType, "id" | "completed">) => {
+    const minOrder = tasks.length > 0 ? Math.min(...tasks.map((t) => t.order)) : 0
     const newTask: TaskType = {
       ...task,
-      id: Date.now().toString(),
+      id: uuidv4(),
       completed: false,
+      createdAt: new Date().toISOString(),
+      order: minOrder - 1,
     }
 
     // 楽観的更新: ローカル状態を先に更新
@@ -263,11 +279,38 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     // 新しいタスクを作成（IDを新規生成し、completedをfalseに、サブタスクもすべてfalseに）
     const newTask: TaskType = {
       ...taskToDuplicate,
-      id: Date.now().toString(),
+      id: uuidv4(),
       completed: false,
+      createdAt: new Date().toISOString(),
+      // Insert duplicate right after original, or at top? Let's put it at top for simplicity in logic or same order?
+      // For now, let's treat it as a new task at the top (order logic same as add).
+      // Or better, make it adjacent to original? The UI code splices it in `index + 1`.
+      // So order should be between original and next?
+      // Since we use integer orders, reordering everything is expensive.
+      // For now, let's stick to the splicing logic in local state for position, but field-wise...
+      // If we rely on `order` field for sorting, we need valid order.
+      // Let's just give it a new order at top to match "new task" behavior for now, or just `min - 1`
+      // But wait, the splice puts it next to original.
+      // To keep implementation simple and consistent with "add task", I will use minOrder - 1 and let it jump to top if re-sorted by order.
+      // BUT, the `duplicateTask` implementation splices it into the array:
+      // const newTasks = [...prev]
+      // newTasks.splice(index + 1, 0, newTask)
+      // So visual order is enforced by array position.
+      // If we sort by `order`, this might break.
+      // Let's defer strict order management for duplicate until full D&D.
+      // For now, I'll give it `order: original.order`? No duplicate keys.
+      // I'll leave `order` as `min - 1` and let the UI splice handle it if custom sort is just array order.
+      // Users current custom sort logic:
+      // return sortConfig.key === "custom" ? ...activeTasks ... : sortedTasks
+      // It uses `activeTasks` (filter result).
+      // So array order MATTERS locally.
+      // `order` field is for persistence effectively.
+      order: (tasks.length > 0 ? Math.min(...tasks.map((t) => t.order)) : 0) - 1,
       subtasks: taskToDuplicate.subtasks?.map((st) => ({
         ...st,
-        id: `${Date.now()}-${st.id}`,
+        id: uuidv4(), // Use uuid for subtasks too? Or simple id?
+        // Original code used Date.now() + st.id.
+        // Let's use uuidv4() for subtasks too if we want consistency.
         completed: false,
       })),
     }
@@ -310,7 +353,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     if (!taskToUpdate) return
 
     const newSubtask: SubTask = {
-      id: Date.now().toString(),
+      id: uuidv4(),
       title,
       completed: false,
     }

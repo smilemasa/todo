@@ -15,4 +15,6 @@ export type TaskType = {
   subtasks?: SubTask[]
   priority: Priority
   completedAt?: string
+  createdAt: string
+  order: number
 }
