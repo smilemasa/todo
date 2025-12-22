@@ -14,12 +14,12 @@ export const Layout = ({ children }: LayoutProps) => {
   const isLoginPage = pathname === "/login"
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box sx={{ minHeight: "100dvh", bgcolor: "background.default" }}>
       <Container maxWidth="xs" disableGutters>
         <Paper
           elevation={3}
           sx={{
-            minHeight: "100vh",
+            minHeight: "100dvh",
             position: "relative",
             bgcolor: "background.default",
             pb: isLoginPage ? 0 : "70px", // Space for BottomNav only if not login
