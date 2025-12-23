@@ -46,6 +46,20 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
     setSubtasks((prev) => [...prev, newSubtask])
   }
 
+  const handleUpdateSubtask = (id: string, title: string) => {
+    setSubtasks((prev) => prev.map((st) => (st.id === id ? { ...st, title } : st)))
+  }
+
+  const handleToggleSubtask = (id: string) => {
+    setSubtasks((prev) =>
+      prev.map((st) => (st.id === id ? { ...st, completed: !st.completed } : st))
+    )
+  }
+
+  const handleDeleteSubtask = (id: string) => {
+    setSubtasks((prev) => prev.filter((st) => st.id !== id))
+  }
+
   const handleSave = () => {
     // Validation
     if (!title.trim()) {
@@ -185,7 +199,13 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
           </Box>
 
           <Stack spacing={0}>
-            <SubTaskList subtasks={subtasks} taskId={task.id} showDeleteButton={true} />
+            <SubTaskList
+              subtasks={subtasks}
+              showDeleteButton={true}
+              onUpdate={handleUpdateSubtask}
+              onDelete={handleDeleteSubtask}
+              onToggle={handleToggleSubtask}
+            />
             <AddSubTask onAdd={handleAddSubtask} />
           </Stack>
         </Box>

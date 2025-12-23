@@ -1,7 +1,6 @@
 import { Box, Typography, Checkbox, IconButton, Stack, InputBase } from "@mui/material"
 import { Check, Delete } from "@mui/icons-material"
 import { useState } from "react"
-import { useTaskContext } from "../context/TaskContext"
 import type { SubTask } from "../types"
 
 const TAG_COLORS = {
@@ -9,13 +8,20 @@ const TAG_COLORS = {
 } as const
 
 type SubTaskListProps = {
-  taskId: string
   subtasks: SubTask[]
   showDeleteButton?: boolean
+  onUpdate: (id: string, title: string) => void
+  onDelete: (id: string) => void
+  onToggle: (id: string) => void
 }
 
-export const SubTaskList = ({ taskId, subtasks, showDeleteButton = false }: SubTaskListProps) => {
-  const { toggleSubtask, updateSubtask, deleteSubtask } = useTaskContext()
+export const SubTaskList = ({
+  subtasks,
+  showDeleteButton = false,
+  onUpdate,
+  onDelete,
+  onToggle,
+}: SubTaskListProps) => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValue, setEditValue] = useState("")
 
@@ -26,7 +32,7 @@ export const SubTaskList = ({ taskId, subtasks, showDeleteButton = false }: SubT
 
   const saveEditing = (id: string) => {
     if (editValue.trim()) {
-      updateSubtask(taskId, id, editValue)
+      onUpdate(id, editValue)
     }
     setEditingId(null)
   }
@@ -61,7 +67,7 @@ export const SubTaskList = ({ taskId, subtasks, showDeleteButton = false }: SubT
             checked={subtask.completed}
             onChange={(e) => {
               e.stopPropagation()
-              toggleSubtask(taskId, subtask.id)
+              onToggle(subtask.id)
             }}
             icon={
               <Box
@@ -127,7 +133,7 @@ export const SubTaskList = ({ taskId, subtasks, showDeleteButton = false }: SubT
               size="small"
               onClick={(e) => {
                 e.stopPropagation()
-                deleteSubtask(taskId, subtask.id)
+                onDelete(subtask.id)
               }}
               sx={{
                 color: "text.secondary",
