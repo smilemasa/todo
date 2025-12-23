@@ -16,6 +16,8 @@ type TaskContextType = {
   deleteTask: (id: string) => void
   duplicateTask: (id: string) => void
   addSubtask: (taskId: string, title: string) => void
+  updateSubtask: (taskId: string, subtaskId: string, title: string) => void
+  deleteSubtask: (taskId: string, subtaskId: string) => void
   toggleSubtask: (taskId: string, subtaskId: string) => void
   reorderTasks: (newTasks: TaskType[]) => void
   sortConfig: SortConfig
@@ -359,6 +361,84 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const updateSubtask = async (taskId: string, subtaskId: string, title: string) => {
+    // 楽観的更新: 現在の状態を保存
+    const previousTasks = tasks
+    const taskToUpdate = tasks.find((t) => t.id === taskId)
+
+    if (!taskToUpdate) return
+
+    const updatedSubtasks = taskToUpdate.subtasks?.map((st) =>
+      st.id === subtaskId ? { ...st, title } : st
+    )
+
+    const updatedTask = {
+      ...taskToUpdate,
+      subtasks: updatedSubtasks,
+    }
+
+    // ローカル状態を更新
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)))
+
+    if (isAuthenticated) {
+      try {
+        const response = await fetch(`/api/tasks/${taskId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ task: updatedTask }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Failed to update subtask: ${response.status}`)
+        }
+      } catch (error) {
+        console.error("Error updating subtask:", error)
+
+        setTasks(previousTasks)
+      }
+    }
+  }
+
+  const deleteSubtask = async (taskId: string, subtaskId: string) => {
+    // 楽観的更新: 現在の状態を保存
+    const previousTasks = tasks
+    const taskToUpdate = tasks.find((t) => t.id === taskId)
+
+    if (!taskToUpdate) return
+
+    const updatedSubtasks = taskToUpdate.subtasks?.filter((st) => st.id !== subtaskId) || []
+
+    const updatedTask = {
+      ...taskToUpdate,
+      subtasks: updatedSubtasks,
+    }
+
+    // ローカル状態を更新
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? updatedTask : t)))
+
+    if (isAuthenticated) {
+      try {
+        const response = await fetch(`/api/tasks/${taskId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ task: updatedTask }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Failed to delete subtask: ${response.status}`)
+        }
+      } catch (error) {
+        console.error("Error deleting subtask:", error)
+
+        setTasks(previousTasks)
+      }
+    }
+  }
+
   const toggleSubtask = async (taskId: string, subtaskId: string) => {
     // 楽観的更新: 現在の状態を保存
     const previousTasks = tasks
@@ -450,6 +530,8 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
         deleteTask,
         duplicateTask,
         addSubtask,
+        updateSubtask,
+        deleteSubtask,
         toggleSubtask,
         reorderTasks,
         sortConfig,

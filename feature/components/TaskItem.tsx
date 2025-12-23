@@ -61,7 +61,7 @@ type TaskItemProps = {
 }
 
 export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: TaskItemProps) => {
-  const { addSubtask, toggleSubtask, deleteTask, duplicateTask, updateTask } = useTaskContext()
+  const { addSubtask, deleteTask, duplicateTask, updateTask } = useTaskContext()
   const [expanded, setExpanded] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
@@ -257,10 +257,7 @@ export const TaskItem = ({ task, onToggle, hideAddSubtask, dragHandleProps }: Ta
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <Box sx={{ px: 2, pb: 2, pt: 1.5, borderTop: "1px solid", borderColor: "divider" }}>
-          <SubTaskList
-            subtasks={subtasks}
-            onToggle={(subtaskId) => toggleSubtask(task.id, subtaskId)}
-          />
+          <SubTaskList taskId={task.id} subtasks={subtasks} />
 
           {!hideAddSubtask && (
             <Box sx={{ mt: 0.5 }}>

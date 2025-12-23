@@ -37,16 +37,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
   const [subtasks, setSubtasks] = useState<SubTask[]>(task.subtasks || [])
   const [titleError, setTitleError] = useState(false)
 
-  // Reset form when task changes
-  // useEffect removed to fix "setState in effect" lint error.
-  // The parent component (TaskItem) will handle resetting state by unmounting/remounting this dialog.
-
-  const handleToggleSubtask = (subtaskId: string) => {
-    setSubtasks((prev) =>
-      prev.map((st) => (st.id === subtaskId ? { ...st, completed: !st.completed } : st))
-    )
-  }
-
   const handleAddSubtask = (title: string) => {
     const newSubtask: SubTask = {
       id: Date.now().toString(),
@@ -54,10 +44,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
       completed: false,
     }
     setSubtasks((prev) => [...prev, newSubtask])
-  }
-
-  const handleDeleteSubtask = (subtaskId: string) => {
-    setSubtasks((prev) => prev.filter((st) => st.id !== subtaskId))
   }
 
   const handleSave = () => {
@@ -140,7 +126,6 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
         />
         <Box sx={{ flexGrow: 1 }}>
           <TextField
-
             variant="standard"
             value={title}
             onChange={(e) => {
@@ -200,13 +185,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
           </Box>
 
           <Stack spacing={0}>
-            <SubTaskList
-              subtasks={subtasks}
-              onToggle={handleToggleSubtask}
-              onDelete={handleDeleteSubtask}
-              showDeleteButton={true}
-            />
-
+            <SubTaskList subtasks={subtasks} taskId={task.id} showDeleteButton={true} />
             <AddSubTask onAdd={handleAddSubtask} />
           </Stack>
         </Box>

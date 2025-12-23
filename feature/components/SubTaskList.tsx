@@ -1,5 +1,7 @@
-import { Box, Typography, Checkbox, IconButton, Stack } from "@mui/material"
+import { Box, Typography, Checkbox, IconButton, Stack, InputBase } from "@mui/material"
 import { Check, Delete } from "@mui/icons-material"
+import { useState } from "react"
+import { useTaskContext } from "../context/TaskContext"
 import type { SubTask } from "../types"
 
 const TAG_COLORS = {
@@ -7,18 +9,36 @@ const TAG_COLORS = {
 } as const
 
 type SubTaskListProps = {
+  taskId: string
   subtasks: SubTask[]
-  onToggle: (subtaskId: string) => void
-  onDelete?: (subtaskId: string) => void
   showDeleteButton?: boolean
 }
 
-export const SubTaskList = ({
-  subtasks,
-  onToggle,
-  onDelete,
-  showDeleteButton = false,
-}: SubTaskListProps) => {
+export const SubTaskList = ({ taskId, subtasks, showDeleteButton = false }: SubTaskListProps) => {
+  const { toggleSubtask, updateSubtask, deleteSubtask } = useTaskContext()
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editValue, setEditValue] = useState("")
+
+  const startEditing = (id: string, title: string) => {
+    setEditingId(id)
+    setEditValue(title)
+  }
+
+  const saveEditing = (id: string) => {
+    if (editValue.trim()) {
+      updateSubtask(taskId, id, editValue)
+    }
+    setEditingId(null)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent, id: string) => {
+    if (e.key === "Enter") {
+      saveEditing(id)
+    } else if (e.key === "Escape") {
+      setEditingId(null)
+    }
+  }
+
   if (subtasks.length === 0) {
     return null
   }
@@ -41,10 +61,7 @@ export const SubTaskList = ({
             checked={subtask.completed}
             onChange={(e) => {
               e.stopPropagation()
-              onToggle(subtask.id)
-            }}
-            inputProps={{
-              "aria-label": `サブタスク「${subtask.title}」を${subtask.completed ? "未完了" : "完了"}にする`,
+              toggleSubtask(taskId, subtask.id)
             }}
             icon={
               <Box
@@ -74,22 +91,43 @@ export const SubTaskList = ({
               </Box>
             }
           />
-          <Typography
-            sx={{
-              flexGrow: 1,
-              fontSize: "0.9375rem",
-              textDecoration: subtask.completed ? "line-through" : "none",
-              color: subtask.completed ? "text.secondary" : "text.primary",
-            }}
-          >
-            {subtask.title}
-          </Typography>
-          {showDeleteButton && onDelete && (
+          {editingId === subtask.id ? (
+            <InputBase
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={() => saveEditing(subtask.id)}
+              onKeyDown={(e) => handleKeyDown(e, subtask.id)}
+              autoFocus
+              fullWidth
+              sx={{
+                fontSize: "0.9375rem",
+                color: "text.primary",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <Typography
+              sx={{
+                flexGrow: 1,
+                fontSize: "0.9375rem",
+                textDecoration: subtask.completed ? "line-through" : "none",
+                color: subtask.completed ? "text.secondary" : "text.primary",
+                cursor: "pointer",
+              }}
+              onClick={(e) => {
+                e.stopPropagation()
+                startEditing(subtask.id, subtask.title)
+              }}
+            >
+              {subtask.title}
+            </Typography>
+          )}
+          {showDeleteButton && (
             <IconButton
               size="small"
               onClick={(e) => {
                 e.stopPropagation()
-                onDelete(subtask.id)
+                deleteSubtask(taskId, subtask.id)
               }}
               sx={{
                 color: "text.secondary",
