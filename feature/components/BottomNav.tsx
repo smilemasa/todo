@@ -2,39 +2,23 @@
 
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material"
 import { TaskAlt, Archive, Settings } from "@mui/icons-material"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
+
+const NAV_ITEMS = [
+  { label: "タスク", icon: <TaskAlt />, path: "/tasks" },
+  { label: "アーカイブ", icon: <Archive />, path: "/archive" },
+  { label: "設定", icon: <Settings />, path: "/settings" },
+]
 
 export const BottomNav = () => {
-  const router = useRouter()
   const pathname = usePathname()
-
-  const getValue = () => {
-    if (pathname === "/tasks") return 0
-    if (pathname === "/archive") return 1
-    if (pathname === "/settings") return 2
-    return 0
-  }
-
-  const value = getValue()
 
   return (
     <Paper sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 10 }} elevation={3}>
       <BottomNavigation
         showLabels
-        value={value}
-        onChange={(_, newValue) => {
-          switch (newValue) {
-            case 0:
-              router.push("/tasks")
-              break
-            case 1:
-              router.push("/archive")
-              break
-            case 2:
-              router.push("/settings")
-              break
-          }
-        }}
+        value={pathname}
         sx={{
           height: 60,
           maxWidth: "448px", // Match the Layout maxWidth
@@ -54,9 +38,16 @@ export const BottomNav = () => {
           },
         }}
       >
-        <BottomNavigationAction label="タスク" icon={<TaskAlt />} />
-        <BottomNavigationAction label="アーカイブ" icon={<Archive />} />
-        <BottomNavigationAction label="設定" icon={<Settings />} />
+        {NAV_ITEMS.map((item) => (
+          <BottomNavigationAction
+            key={item.path}
+            label={item.label}
+            icon={item.icon}
+            component={Link}
+            href={item.path}
+            value={item.path}
+          />
+        ))}
       </BottomNavigation>
     </Paper>
   )
