@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, Checkbox, IconButton, Typography, Box, Stack, Collapse } from "@mui/material"
 import { Check, ExpandMore, ExpandLess } from "@mui/icons-material"
 import { useState } from "react"

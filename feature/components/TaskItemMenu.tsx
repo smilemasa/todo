@@ -1,16 +1,7 @@
-import {
-  IconButton,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material"
-import {
-  MoreVert,
-  EditOutlined,
-  ContentCopy,
-  DeleteOutline,
-} from "@mui/icons-material"
+"use client"
+
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material"
+import { MoreVert, EditOutlined, ContentCopy, DeleteOutline } from "@mui/icons-material"
 import { useState } from "react"
 
 type TaskItemMenuProps = {

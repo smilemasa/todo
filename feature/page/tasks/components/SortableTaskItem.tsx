@@ -1,3 +1,5 @@
+"use client"
+
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { TaskItem } from "../../../components/TaskItem"
@@ -22,8 +24,8 @@ export const SortableTaskItem = ({ task, onToggle }: SortableTaskItemProps) => {
 
   return (
     <Box ref={setNodeRef} style={style} sx={{ mb: 2 }}>
-      <TaskItem 
-        task={task} 
+      <TaskItem
+        task={task}
         onToggle={onToggle}
         dragHandleProps={{
           attributes,

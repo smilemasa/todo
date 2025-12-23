@@ -1,3 +1,5 @@
+"use client"
+
 import { Box, Typography, Stack } from "@mui/material"
 import { CheckCircleOutline } from "@mui/icons-material"
 import { TaskItem } from "../../../components/TaskItem"

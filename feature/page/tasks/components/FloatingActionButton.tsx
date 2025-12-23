@@ -1,3 +1,5 @@
+"use client"
+
 import { Button, Box } from "@mui/material"
 import { Add } from "@mui/icons-material"
 

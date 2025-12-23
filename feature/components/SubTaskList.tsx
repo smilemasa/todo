@@ -1,3 +1,5 @@
+"use client"
+
 import { Box, Typography, Checkbox, IconButton, Stack, InputBase } from "@mui/material"
 import { Check, Delete } from "@mui/icons-material"
 import { useState } from "react"
