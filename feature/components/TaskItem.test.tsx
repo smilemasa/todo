@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 import { TaskItem } from "./TaskItem"
 import { TaskType } from "../types"
-import userEvent from "@testing-library/user-event"
+import { TaskItemMenuProps } from "./TaskItemMenu"
 
 const mockAddSubtask = vi.fn()
 const mockDuplicateTask = vi.fn()
@@ -37,7 +37,7 @@ vi.mock("./EditTaskDialog", () => ({
 }))
 
 vi.mock("./TaskItemMenu", () => ({
-  TaskItemMenu: ({ onEdit, onDuplicate, onDelete }: any) => (
+  TaskItemMenu: ({ onEdit, onDuplicate, onDelete }: TaskItemMenuProps) => (
     <div data-testid="task-item-menu">
       <button onClick={onEdit}>Edit</button>
       <button onClick={onDuplicate}>Duplicate</button>

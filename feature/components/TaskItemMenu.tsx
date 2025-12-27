@@ -4,7 +4,7 @@ import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/mat
 import { MoreVert, EditOutlined, ContentCopy, DeleteOutline } from "@mui/icons-material"
 import { useState } from "react"
 
-type TaskItemMenuProps = {
+export type TaskItemMenuProps = {
   onEdit: () => void
   onDuplicate: () => void
   onDelete: () => void
