@@ -23,7 +23,6 @@ export const TaskList = () => {
 
   const displayTasks = sortTasks(tasks, sortConfig)
 
-  // タッチセンサーの設定（長押しでドラッグ開始）
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 5,
@@ -51,13 +50,11 @@ export const TaskList = () => {
 
     const newTasks = arrayMove(displayTasks, oldIndex, newIndex)
 
-    // 完了済みタスクと未完了タスクを分離
     const completedTasks = tasks.filter((task) => task.completed)
 
     // 降順の場合は、表示順序と実際のorder値が逆になるため、配列を反転
     const orderedTasks = sortConfig.direction === "desc" ? [...newTasks].reverse() : newTasks
 
-    // 新しい順序で未完了タスクを配置し、その後に完了済みタスクを追加
     const reorderedTasks = [...orderedTasks, ...completedTasks]
 
     reorderTasks(reorderedTasks)

@@ -49,7 +49,7 @@ const INITIAL_TASKS: TaskType[] = [
     deadline: "",
     completed: false,
     subtasks: [
-      { id: "s1", title: "資料のデータを収集", completed: true },
+      { id: "s1", title: "資料のデータを収集", completed: false },
       { id: "s2", title: "週報フォーマットに入力", completed: false },
       { id: "s3", title: "上司に提出", completed: false },
     ],
