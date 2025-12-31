@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { updateUserTask, deleteUserTask } from "@/lib/gcsStorage"
+import { authOptions } from "@/app/lib/auth"
+import { updateUserTask, deleteUserTask } from "@/app/lib/gcsStorage"
 
 // タスクの更新
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

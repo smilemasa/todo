@@ -1,5 +1,5 @@
 import { Storage } from "@google-cloud/storage"
-import type { TaskType } from "../feature/types"
+import type { TaskType } from "@/feature/types"
 
 // GCS クライアントの初期化
 const storage = new Storage({
@@ -18,7 +18,9 @@ const bucket = bucketName ? storage.bucket(bucketName) : null
  */
 export async function saveUserTasks(userId: string, tasks: TaskType[]): Promise<void> {
   if (!bucket) {
-    throw new Error("Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable.")
+    throw new Error(
+      "Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable."
+    )
   }
   const fileName = `tasks/${userId}.json`
   const file = bucket.file(fileName)
@@ -64,7 +66,9 @@ export async function getUserTasks(userId: string): Promise<TaskType[]> {
  */
 export async function deleteUserTasks(userId: string): Promise<void> {
   if (!bucket) {
-    throw new Error("Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable.")
+    throw new Error(
+      "Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable."
+    )
   }
   const fileName = `tasks/${userId}.json`
   const file = bucket.file(fileName)
@@ -92,7 +96,11 @@ export async function addUserTask(userId: string, task: TaskType): Promise<void>
 /**
  * タスクを更新
  */
-export async function updateUserTask(userId: string, taskId: string, updatedTask: TaskType): Promise<void> {
+export async function updateUserTask(
+  userId: string,
+  taskId: string,
+  updatedTask: TaskType
+): Promise<void> {
   const tasks = await getUserTasks(userId)
   const index = tasks.findIndex((t) => t.id === taskId)
   if (index !== -1) {

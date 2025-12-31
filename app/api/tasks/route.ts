@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { getUserTasks, addUserTask, saveUserTasks } from "@/lib/gcsStorage"
+import { authOptions } from "@/app/lib/auth"
+import { getUserTasks, addUserTask, saveUserTasks } from "@/app/lib/gcsStorage"
 
 // タスクの取得
 export async function GET() {
