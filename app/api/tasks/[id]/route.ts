@@ -12,11 +12,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userId = session.user.email
+    const userEmail = session.user.email
     const { id: taskId } = await params
     const { task } = await request.json()
 
-    await updateUserTask(userId, taskId, task)
+    await updateUserTask(userEmail, taskId, task)
 
     return NextResponse.json({ success: true, task })
   } catch (error) {
@@ -37,10 +37,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userId = session.user.email
+    const userEmail = session.user.email
     const { id: taskId } = await params
 
-    await deleteUserTask(userId, taskId)
+    await deleteUserTask(userEmail, taskId)
 
     return NextResponse.json({ success: true })
   } catch (error) {

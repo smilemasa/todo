@@ -12,8 +12,8 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userId = session.user.email
-    const tasks = await getUserTasks(userId)
+    const userEmail = session.user.email
+    const tasks = await getUserTasks(userEmail)
 
     return NextResponse.json({ tasks })
   } catch (error) {
@@ -31,10 +31,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userId = session.user.email
+    const userEmail = session.user.email
     const { task } = await request.json()
 
-    await addUserTask(userId, task)
+    await addUserTask(userEmail, task)
 
     return NextResponse.json({ success: true, task })
   } catch (error) {
@@ -52,10 +52,10 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const userId = session.user.email
+    const userEmail = session.user.email
     const { tasks } = await request.json()
 
-    await saveUserTasks(userId, tasks)
+    await saveUserTasks(userEmail, tasks)
 
     return NextResponse.json({ success: true, tasks })
   } catch (error) {

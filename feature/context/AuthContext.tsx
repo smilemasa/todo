@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: "guest@example.com",
       isGuest: true,
     }
-    Cookies.set("guest-token", guestId, { expires: 7 }) // Expire in 7 days
+    Cookies.set("guest-token", guestId, { expires: 7 })
     setGuestUser(newGuestUser)
     router.push("/tasks")
   }

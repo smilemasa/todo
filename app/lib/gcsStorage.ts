@@ -16,13 +16,13 @@ const bucket = bucketName ? storage.bucket(bucketName) : null
 /**
  * ユーザーのタスクをGCSに保存
  */
-export async function saveUserTasks(userId: string, tasks: TaskType[]): Promise<void> {
+export async function saveUserTasks(userEmail: string, tasks: TaskType[]): Promise<void> {
   if (!bucket) {
     throw new Error(
       "Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable."
     )
   }
-  const fileName = `tasks/${userId}.json`
+  const fileName = `tasks/${userEmail}.json`
   const file = bucket.file(fileName)
 
   const content = JSON.stringify(tasks, null, 2)
@@ -38,12 +38,12 @@ export async function saveUserTasks(userId: string, tasks: TaskType[]): Promise<
 /**
  * ユーザーのタスクをGCSから取得
  */
-export async function getUserTasks(userId: string): Promise<TaskType[]> {
+export async function getUserTasks(userEmail: string): Promise<TaskType[]> {
   if (!bucket) {
     console.warn("Cloud Storage is not configured. Returning empty task list.")
     return []
   }
-  const fileName = `tasks/${userId}.json`
+  const fileName = `tasks/${userEmail}.json`
   const file = bucket.file(fileName)
 
   try {
@@ -64,13 +64,13 @@ export async function getUserTasks(userId: string): Promise<TaskType[]> {
 /**
  * ユーザーのタスクファイルを削除
  */
-export async function deleteUserTasks(userId: string): Promise<void> {
+export async function deleteUserTasks(userEmail: string): Promise<void> {
   if (!bucket) {
     throw new Error(
       "Cloud Storage is not configured. Please set GCS_BUCKET_NAME environment variable."
     )
   }
-  const fileName = `tasks/${userId}.json`
+  const fileName = `tasks/${userEmail}.json`
   const file = bucket.file(fileName)
 
   try {
@@ -87,25 +87,25 @@ export async function deleteUserTasks(userId: string): Promise<void> {
 /**
  * 新しいタスクを追加
  */
-export async function addUserTask(userId: string, task: TaskType): Promise<void> {
-  const tasks = await getUserTasks(userId)
+export async function addUserTask(userEmail: string, task: TaskType): Promise<void> {
+  const tasks = await getUserTasks(userEmail)
   tasks.unshift(task)
-  await saveUserTasks(userId, tasks)
+  await saveUserTasks(userEmail, tasks)
 }
 
 /**
  * タスクを更新
  */
 export async function updateUserTask(
-  userId: string,
+  userEmail: string,
   taskId: string,
   updatedTask: TaskType
 ): Promise<void> {
-  const tasks = await getUserTasks(userId)
+  const tasks = await getUserTasks(userEmail)
   const index = tasks.findIndex((t) => t.id === taskId)
   if (index !== -1) {
     tasks[index] = updatedTask
-    await saveUserTasks(userId, tasks)
+    await saveUserTasks(userEmail, tasks)
   } else {
     throw new Error("Task not found")
   }
@@ -114,8 +114,8 @@ export async function updateUserTask(
 /**
  * タスクを削除
  */
-export async function deleteUserTask(userId: string, taskId: string): Promise<void> {
-  const tasks = await getUserTasks(userId)
+export async function deleteUserTask(userEmail: string, taskId: string): Promise<void> {
+  const tasks = await getUserTasks(userEmail)
   const filteredTasks = tasks.filter((t) => t.id !== taskId)
-  await saveUserTasks(userId, filteredTasks)
+  await saveUserTasks(userEmail, filteredTasks)
 }
