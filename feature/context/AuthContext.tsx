@@ -7,10 +7,8 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import Cookies from "js-cookie"
 
 type User = {
-  id: string
   name: string
-  email?: string
-  image?: string
+  email: string
   isGuest: boolean
 }
 
@@ -34,8 +32,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (guestToken && !guestUser) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setGuestUser({
-        id: guestToken,
         name: "Guest User",
+        email: "guest@example.com",
         isGuest: true,
       })
     }
@@ -48,8 +46,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginGuest = () => {
     const guestId = "GUEST"
     const newGuestUser: User = {
-      id: guestId,
       name: "Guest User",
+      email: "guest@example.com",
       isGuest: true,
     }
     Cookies.set("guest-token", guestId, { expires: 7 }) // Expire in 7 days
@@ -73,10 +71,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const user: User | null = session?.user
     ? {
-        id: session.user.id || session.user.email || "",
         name: session.user.name || "User",
-        email: session.user.email || undefined,
-        image: session.user.image || undefined,
+        email: session.user.email || "",
+
         isGuest: false,
       }
     : guestUser
