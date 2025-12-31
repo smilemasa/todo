@@ -167,12 +167,6 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
                   ),
                 },
               }}
-              // This is a bit of a hack to show placeholder logic if needed,
-              // but MUI date input usually handles itself.
-              // The browser's native date picker will be used.
-              // We'll hide the default calendar indicator to use our icon if possible,
-              // but for standard HTML date input, customizing the icon is tricky reliably cross-browser without a library like MUI DatePicker.
-              // For this task, we will stick to standard TextField with type="date".
               sx={{
                 "& input::-webkit-calendar-picker-indicator": {
                   opacity: 0,
