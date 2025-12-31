@@ -30,15 +30,19 @@ export const SettingsPage = () => {
       text: "ヘルプ",
       icon: <HelpOutlineIcon />,
       color: "inherit",
+      // TODO: 未実装
+      disabled: true,
     },
     {
       text: "アプリについて",
       icon: <InfoOutlinedIcon />,
       color: "inherit",
+      // TODO: 未実装
+      disabled: true,
     },
     {
       text: "ログアウト",
-      icon: <LogoutIcon sx={{ color: "#ef4444" }} />, // red-500
+      icon: <LogoutIcon sx={{ color: "#ef4444" }} />,
       color: "#ef4444",
       divider: true,
       onClick: logout,
@@ -134,7 +138,7 @@ export const SettingsPage = () => {
           <List disablePadding>
             {menuItems.map((item, index) => (
               <ListItem key={item.text} disablePadding divider={index !== menuItems.length - 1}>
-                <ListItemButton sx={{ py: 2 }} onClick={item.onClick}>
+                <ListItemButton sx={{ py: 2 }} onClick={item.onClick} disabled={item.disabled}>
                   <ListItemIcon sx={{ minWidth: 40, color: "text.primary" }}>
                     {item.icon}
                   </ListItemIcon>
