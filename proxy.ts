@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
 
 export default withAuth(
-  function middleware() {
+  function proxy() {
     // Custom logic can go here if needed, but the main auth check is handled by withAuth
     // and the `pages` config below.
     return NextResponse.next()
