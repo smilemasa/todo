@@ -1,12 +1,22 @@
 "use client"
 
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+
 import { Box, Button, Typography, Paper, Divider } from "@mui/material"
 import GoogleIcon from "@mui/icons-material/Google"
 import PersonIcon from "@mui/icons-material/Person"
 import { useAuth } from "../../context/AuthContext"
 
 export const LoginPage = () => {
-  const { loginGoogle, loginGuest, isLoading } = useAuth()
+  const { loginGoogle, loginGuest, isLoading, user } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push("/tasks")
+    }
+  }, [user, isLoading, router])
 
   return (
     <Box
