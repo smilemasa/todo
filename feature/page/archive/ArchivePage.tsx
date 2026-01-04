@@ -25,8 +25,12 @@ export const ArchivePage = () => {
       <Header title="アーカイブ" />
       <Box sx={{ p: "24px", pb: "80px" }}>
         {/* Search Bar */}
+        {/* スマホ等でEnterキーを検索ボタンとして機能させるためにformを使用しています */}
         <Paper
           component="form"
+          onSubmit={(e) => {
+            e.preventDefault()
+          }}
           sx={{
             p: "8px 16px",
             display: "flex",
