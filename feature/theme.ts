@@ -38,12 +38,5 @@ export const theme = createTheme({
         },
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: "none", // Remove default gradient in dark mode if switched
-        },
-      },
-    },
   },
 })

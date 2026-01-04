@@ -24,8 +24,8 @@ export const ArchivePage = () => {
     <>
       <Header title="アーカイブ" />
       <Box sx={{ p: "24px", pb: "80px" }}>
-        {/* Search Bar */}
-        {/* スマホ等でEnterキーを検索ボタンとして機能させるためにformを使用しています */}
+        {/* 検索バー */}
+        {/* スマホ等でEnterキーを検索ボタンとして機能させるためにformを使用 */}
         <Paper
           component="form"
           onSubmit={(e) => {
@@ -63,7 +63,7 @@ export const ArchivePage = () => {
           />
         </Paper>
 
-        {/* List */}
+        {/* 一覧 */}
         <Stack spacing={2}>
           {completedTasks.map((task) => (
             <TaskItem key={task.id} task={task} onToggle={toggleTask} hideAddSubtask={true} />

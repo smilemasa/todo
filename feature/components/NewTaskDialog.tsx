@@ -28,12 +28,12 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
   const { addTask } = useTaskContext()
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [priority, setPriority] = useState("中") // Default to Medium
+  const [priority, setPriority] = useState("中")
   const [date, setDate] = useState("")
   const [titleError, setTitleError] = useState(false)
 
   const handleCreate = () => {
-    // Validation
+    // バリデーション
     if (!title.trim()) {
       setTitleError(true)
       return
@@ -43,9 +43,8 @@ export const NewTaskDialog = ({ open, onClose }: NewTaskDialogProps) => {
     const newTask: Omit<TaskType, "id" | "completed" | "createdAt" | "order"> = {
       title,
       description: description || undefined,
-      // Handle priority as a tag for now, as per existing data structure
       priority: priority === "高" ? "high" : priority === "中" ? "medium" : "low",
-      // Format date to YYYY/MM/DD
+      // 日付を YYYY/MM/DD 形式にフォーマット
       deadline: date ? date.replace(/-/g, "/") : undefined,
     }
 

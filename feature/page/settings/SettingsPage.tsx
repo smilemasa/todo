@@ -53,7 +53,7 @@ export const SettingsPage = () => {
     <>
       <Header title="設定" />
       <Box sx={{ p: "24px" }}>
-        {/* General Settings */}
+        {/* 一般設定 */}
         <Typography
           variant="body2"
           sx={{
@@ -65,7 +65,7 @@ export const SettingsPage = () => {
           タスク設定
         </Typography>
 
-        {/* Task Settings */}
+        {/* タスク設定 */}
         <Paper
           elevation={0}
           sx={{
@@ -113,7 +113,7 @@ export const SettingsPage = () => {
           </List>
         </Paper>
 
-        {/* Section Label */}
+        {/* セクションラベル */}
         <Typography
           variant="body2"
           sx={{
@@ -125,7 +125,7 @@ export const SettingsPage = () => {
           その他
         </Typography>
 
-        {/* Menu List */}
+        {/* メニューリスト */}
         <Paper
           elevation={0}
           sx={{

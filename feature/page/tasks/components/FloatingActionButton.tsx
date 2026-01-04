@@ -31,7 +31,7 @@ export const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => 
         sx={{
           pointerEvents: "auto",
           width: "100%",
-          maxWidth: { xs: "calc(100% - 32px)", sm: 384 }, // Max width matching card container approx
+          maxWidth: { xs: "calc(100% - 32px)", sm: 384 }, // カードコンテナの幅に合わせる
           height: 56,
           fontSize: "1.125rem", // text-lg
           fontWeight: 700,

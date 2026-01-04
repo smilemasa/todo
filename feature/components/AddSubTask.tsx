@@ -17,13 +17,11 @@ export const AddSubTask = ({ onAdd }: AddSubTaskProps) => {
       onAdd(title)
       setTitle("")
       setIsAdding(false)
-      // Focus restoration could be handled here if needed, but not strictly required
     }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault() // Prevent form submission if any
       handleAdd()
     } else if (e.key === "Escape") {
       setTitle("")

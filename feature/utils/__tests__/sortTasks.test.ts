@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest"
 import { sortTasks, SortConfig } from "../sortTasks"
 import { TaskType } from "../../types"
 
-// Helper to create mock tasks
+// モックタスク作成ヘルパー
 const createTask = (overrides: Partial<TaskType> = {}): TaskType => ({
   id: "1",
   title: "Task",
@@ -13,12 +13,8 @@ const createTask = (overrides: Partial<TaskType> = {}): TaskType => ({
   ...overrides,
 })
 
-// Helper to test sort order
-const expectSortOrder = (
-  tasks: TaskType[],
-  config: SortConfig,
-  expectedIds: string[]
-) => {
+// ソート順テストヘルパー
+const expectSortOrder = (tasks: TaskType[], config: SortConfig, expectedIds: string[]) => {
   const result = sortTasks(tasks, config)
   expect(result.map((t) => t.id)).toEqual(expectedIds)
 }
@@ -31,9 +27,9 @@ describe("sortTasks", () => {
         createTask({ id: "2", completed: true }),
         createTask({ id: "3", completed: false }),
       ]
-      
+
       const result = sortTasks(tasks, { key: "date", direction: "asc" })
-      
+
       expect(result).toHaveLength(2)
       expect(result.find((t) => t.id === "2")).toBeUndefined()
     })
@@ -89,7 +85,7 @@ describe("sortTasks", () => {
 
   describe("deadline sorting", () => {
     const tasks = [
-      createTask({ id: "1" }), // No deadline
+      createTask({ id: "1" }), // 期限なし
       createTask({ id: "2", deadline: "2025-01-15T00:00:00.000Z" }),
       createTask({ id: "3", deadline: "2025-01-10T00:00:00.000Z" }),
       createTask({ id: "4", deadline: "2025-01-20T00:00:00.000Z" }),
@@ -97,32 +93,24 @@ describe("sortTasks", () => {
     ]
 
     it("should sort by deadline ascending (earliest first)", () => {
-      expectSortOrder(
-        tasks,
-        { key: "deadline", direction: "asc" },
-        ["3", "2", "4", "1", "5"]
-      )
+      expectSortOrder(tasks, { key: "deadline", direction: "asc" }, ["3", "2", "4", "1", "5"])
     })
 
     it("should sort by deadline descending (latest first)", () => {
-      expectSortOrder(
-        tasks,
-        { key: "deadline", direction: "desc" },
-        ["1", "5", "4", "2", "3"]
-      )
+      expectSortOrder(tasks, { key: "deadline", direction: "desc" }, ["1", "5", "4", "2", "3"])
     })
 
     it("should place tasks without deadline at the end when ascending", () => {
       const result = sortTasks(tasks, { key: "deadline", direction: "asc" })
       const lastTwoTasks = result.slice(-2)
-      
+
       expect(lastTwoTasks.every((t) => !t.deadline)).toBe(true)
     })
 
     it("should place tasks without deadline at the beginning when descending", () => {
       const result = sortTasks(tasks, { key: "deadline", direction: "desc" })
       const firstTwoTasks = result.slice(0, 2)
-      
+
       expect(firstTwoTasks.every((t) => !t.deadline)).toBe(true)
     })
 
@@ -130,7 +118,7 @@ describe("sortTasks", () => {
       const result = sortTasks(tasks, { key: "deadline", direction: "asc" })
       const withDeadline = result.filter((t) => t.deadline)
       const withoutDeadline = result.filter((t) => !t.deadline)
-      
+
       expect(withDeadline.length).toBe(3)
       expect(withoutDeadline.length).toBe(2)
     })

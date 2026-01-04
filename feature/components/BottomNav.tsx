@@ -21,7 +21,7 @@ export const BottomNav = () => {
         value={pathname}
         sx={{
           height: 60,
-          maxWidth: "448px", // Match the Layout maxWidth
+          maxWidth: "448px", // LayoutのmaxWidthに合わせる
           mx: "auto",
           "& .MuiBottomNavigationAction-root": {
             color: "text.secondary",

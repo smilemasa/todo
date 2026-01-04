@@ -484,7 +484,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const reorderTasks = async (newTasks: TaskType[]) => {
-    // Calculate new order values based on array index
+    // 配列のインデックスに基づいて新しい順序値を計算
     const tasksWithNewOrder = newTasks.map((task, index) => ({
       ...task,
       order: index,
@@ -498,7 +498,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
 
     if (isAuthenticated) {
       try {
-        // Bulk update - send all tasks with new orders
+        // 一括更新 - 新しい順序で全タスクを送信
         const response = await fetch("/api/tasks", {
           method: "PUT",
           headers: {

@@ -22,7 +22,7 @@ export const Layout = ({ children }: LayoutProps) => {
             minHeight: "100dvh",
             position: "relative",
             bgcolor: "background.default",
-            pb: isLoginPage ? 0 : "70px", // Space for BottomNav only if not login
+            pb: isLoginPage ? 0 : "70px", // ログイン画面以外の場合のみBottomNav用のスペースを確保
             display: "flex",
             flexDirection: "column",
           }}

@@ -63,7 +63,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
   }
 
   const handleSave = () => {
-    // Validation
+    // バリデーション
     if (!title.trim()) {
       setTitleError(true)
       return
@@ -320,7 +320,7 @@ export const EditTaskDialog = ({ open, onClose, task, onSave }: EditTaskDialogPr
           />
         </Box>
 
-        {/* Save Button */}
+        {/* 保存ボタン */}
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Button
             variant="contained"
