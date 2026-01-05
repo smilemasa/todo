@@ -13,7 +13,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 const SETTINGS_STORAGE_KEY = "todo-app-settings"
 
 const getInitialSettings = () => {
-  if (typeof window === "undefined") return true
+  if (typeof window === "undefined") return false
   const savedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY)
   if (savedSettings) {
     try {
@@ -25,7 +25,7 @@ const getInitialSettings = () => {
       console.error("Error loading settings:", error)
     }
   }
-  return true
+  return false
 }
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
